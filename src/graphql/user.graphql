@@ -44,7 +44,13 @@ input CreateCompanyInput {
   description: String
 }
 
+input SignInInput {
+  email: String!
+  password: String!
+}
+
 type Mutation {
   createEmployee(input: CreateEmployeeInput!): Employee!
   createCompany(input: CreateCompanyInput!): Company!
+  signIn(input: SignInInput!): User!
 }
