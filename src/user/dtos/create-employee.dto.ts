@@ -1,8 +1,29 @@
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  MinLength,
+  Validate,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  ValidationArguments,
+} from 'class-validator';
+
+@ValidatorConstraint({ name: 'matchPassword', async: false })
+class MatchPassword implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    const obj = args.object as any;
+    return value === obj.password;
+  }
+
+  defaultMessage() {
+    return 'Passwords do not match';
+  }
+}
 
 export class CreateEmployeeDto {
   @IsString()
   firstName: string;
+
   @IsString()
   lastName: string;
 
@@ -16,5 +37,6 @@ export class CreateEmployeeDto {
 
   @IsString()
   @MinLength(6)
+  @Validate(MatchPassword)
   confirmPassword: string;
 }
