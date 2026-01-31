@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider   = "prisma-client"
+  output     = "../generated/prisma"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum UserType {
+  EMPLOYEE
+  COMPANY
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  user_type UserType
+  employee  Employee?
+  company   Copmany?
+
+  @@map("users")
+}
+
+model Employee {
+  id           Int           @id @default(autoincrement())
+  userId       Int           @unique
+  user         User          @relation(fields: [userId], references: [id])
+  firstName    String
+  lastName     String
+  phone        String?
+  applications Application[]
+
+  @@map("user_profiles")
+}
+
+model Copmany {
+  id          Int       @id @default(autoincrement())
+  companyName String
+  website     String?
+  userId      Int       @unique
+  user        User      @relation(fields: [userId], references: [id])
+  description String?
+  location    String?
+  jobPosts    JobPost[]
+
+  @@map("company_profiles")
+}
+
+model JobPost {
+  id           Int           @id @default(autoincrement())
+  title        String
+  description  String
+  companyId    Int
+  company      Copmany       @relation(fields: [companyId], references: [id])
+  applications Application[]
+
+  @@map("job_posts")
+}
+
+model Application {
+  id         Int               @id @default(autoincrement())
+  employeeId Int
+  employee   Employee          @relation(fields: [employeeId], references: [id])
+  jobPostId  Int
+  jobPost    JobPost           @relation(fields: [jobPostId], references: [id])
+  status     ApplicationStatus @default(PENDING)
+
+  @@map("applications")
+}

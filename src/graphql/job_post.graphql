@@ -1,0 +1,6 @@
+type JobPost {
+  id: ID!
+  title: String!
+  description: String!
+  company: Company!
+}

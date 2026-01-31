@@ -1,0 +1,14 @@
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+type Application {
+  id: ID!
+  jobPost: JobPost!
+  employee: Employee!
+  company: Company!
+  status: ApplicationStatus!
+}

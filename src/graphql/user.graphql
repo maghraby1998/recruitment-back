@@ -1,0 +1,29 @@
+enum UserType {
+  EMPLOYEE
+  COMPANY
+}
+
+type User {
+  id: ID!
+  email: String!
+  userType: UserType
+  employee: Employee
+  company: Company
+}
+
+type Employee {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  user: User!
+}
+
+type Company {
+  id: ID!
+  name: String!
+  user: User!
+}
+
+type Query {
+  users: [User!]!
+}
