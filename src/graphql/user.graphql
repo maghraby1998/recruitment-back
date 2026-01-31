@@ -27,3 +27,24 @@ type Company {
 type Query {
   users: [User!]!
 }
+
+input CreateEmployeeInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  confirmPassword: String!
+}
+
+input CreateCompanyInput {
+  name: String!
+  email: String!
+  password: String!
+  confirmPassword: String!
+  description: String
+}
+
+type Mutation {
+  createEmployee(input: CreateEmployeeInput!): Employee!
+  createCompany(input: CreateCompanyInput!): Company!
+}
