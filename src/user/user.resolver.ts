@@ -8,6 +8,7 @@ import { Public } from 'src/decorators/public.decorator';
 export class UserResolver {
   constructor(private userService: UserService) {}
 
+  @Public()
   @Mutation()
   async createEmployee(@Args('input') input: CreateEmployeeDto) {
     return this.userService.createEmployee(input);
