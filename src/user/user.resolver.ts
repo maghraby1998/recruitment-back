@@ -1,7 +1,7 @@
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { CreateEmployeeDto } from './dtos/create-employee.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { Public } from 'src/decorators/public.decorator';
 
 @Resolver()
@@ -30,8 +30,21 @@ export class UserResolver {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/',
     });
 
     return user;
+  }
+
+  @Public()
+  @Mutation()
+  async logOut(@Context() context: { res: Response; req: Request }) {
+    context.res.clearCookie('access_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+    });
+    return true;
   }
 }

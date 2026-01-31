@@ -53,4 +53,5 @@ type Mutation {
   createEmployee(input: CreateEmployeeInput!): Employee!
   createCompany(input: CreateCompanyInput!): Company!
   signIn(input: SignInInput!): User!
+  logOut: Boolean!
 }
