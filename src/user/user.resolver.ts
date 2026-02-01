@@ -1,18 +1,25 @@
-import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Context,
+  Mutation,
+  Parent,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { CreateEmployeeDto } from './dtos/create-employee.dto';
 import { Request, Response } from 'express';
 import { Public } from 'src/decorators/public.decorator';
+import { User } from 'generated/prisma/client';
+import { EmployeeService } from 'src/employee/employee.service';
+import { CompanyService } from 'src/company/company.service';
 
 @Resolver()
 export class UserResolver {
-  constructor(private userService: UserService) {}
-
-  @Public()
-  @Mutation()
-  async createEmployee(@Args('input') input: CreateEmployeeDto) {
-    return this.userService.createEmployee(input);
-  }
+  constructor(
+    private userService: UserService,
+    private employeeService: EmployeeService,
+    private companyService: CompanyService,
+  ) {}
 
   @Public()
   @Mutation()
@@ -25,6 +32,12 @@ export class UserResolver {
       input.password,
     );
 
+    this.storeAccessTokenInCookie(context, accessToken);
+
+    return user;
+  }
+
+  storeAccessTokenInCookie(context: { res: Response }, accessToken: string) {
     context.res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -32,8 +45,6 @@ export class UserResolver {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: '/',
     });
-
-    return user;
   }
 
   @Public()
@@ -46,5 +57,15 @@ export class UserResolver {
       path: '/',
     });
     return true;
+  }
+
+  @ResolveField()
+  async employee(@Parent() user: User) {
+    return this.employeeService.getEmployeeByUserId(+user.id);
+  }
+
+  @ResolveField()
+  async company(@Parent() user: User) {
+    return this.companyService.getCompanyByUserId(+user.id);
   }
 }

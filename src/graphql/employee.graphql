@@ -1,0 +1,18 @@
+type Employee {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  user: User!
+}
+
+input CreateEmployeeInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  confirmPassword: String!
+}
+
+type Mutation {
+  createEmployee(input: CreateEmployeeInput!): Employee!
+}

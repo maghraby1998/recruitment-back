@@ -11,37 +11,8 @@ type User {
   company: Company
 }
 
-type Employee {
-  id: ID!
-  firstName: String!
-  lastName: String!
-  user: User!
-}
-
-type Company {
-  id: ID!
-  name: String!
-  user: User!
-}
-
 type Query {
   users: [User!]!
-}
-
-input CreateEmployeeInput {
-  firstName: String!
-  lastName: String!
-  email: String!
-  password: String!
-  confirmPassword: String!
-}
-
-input CreateCompanyInput {
-  name: String!
-  email: String!
-  password: String!
-  confirmPassword: String!
-  description: String
 }
 
 input SignInInput {
@@ -50,8 +21,6 @@ input SignInInput {
 }
 
 type Mutation {
-  createEmployee(input: CreateEmployeeInput!): Employee!
-  createCompany(input: CreateCompanyInput!): Company!
   signIn(input: SignInInput!): User!
   logOut: Boolean!
 }

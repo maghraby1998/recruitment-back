@@ -8,6 +8,8 @@ import { PrismaService } from './prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
+import { EmployeeModule } from './employee/employee.module';
+import { CompanyModule } from './company/company.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { AuthGuard } from './guards/auth.guard';
       global: true,
       secret: 'randomsecretfornowthatshouldbereplacedlater',
     }),
+    EmployeeModule,
+    CompanyModule,
   ],
   controllers: [AppController],
   providers: [

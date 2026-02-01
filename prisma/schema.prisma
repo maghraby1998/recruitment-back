@@ -52,7 +52,7 @@ model Employee {
 
 model Copmany {
   id          Int       @id @default(autoincrement())
-  companyName String
+  name        String
   website     String?
   userId      Int       @unique
   user        User      @relation(fields: [userId], references: [id])
