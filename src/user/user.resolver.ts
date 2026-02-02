@@ -3,6 +3,7 @@ import {
   Context,
   Mutation,
   Parent,
+  Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
@@ -12,6 +13,7 @@ import { Public } from 'src/decorators/public.decorator';
 import { User } from 'generated/prisma/client';
 import { EmployeeService } from 'src/employee/employee.service';
 import { CompanyService } from 'src/company/company.service';
+import { Auth } from 'src/decorators/auth.decorator';
 
 @Resolver()
 export class UserResolver {
@@ -47,7 +49,6 @@ export class UserResolver {
     });
   }
 
-  @Public()
   @Mutation()
   async logOut(@Context() context: { res: Response; req: Request }) {
     context.res.clearCookie('access_token', {
@@ -67,5 +68,10 @@ export class UserResolver {
   @ResolveField()
   async company(@Parent() user: User) {
     return this.companyService.getCompanyByUserId(+user.id);
+  }
+
+  @Query()
+  async getAuthUser(@Auth() user: User) {
+    return this.userService.getAuthUser(Number(user.id));
   }
 }

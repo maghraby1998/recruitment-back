@@ -13,6 +13,7 @@ type User {
 
 type Query {
   users: [User!]!
+  getAuthUser: User!
 }
 
 input SignInInput {

@@ -11,6 +11,18 @@ export class UserService {
     private jwtService: JwtService,
   ) {}
 
+  async getAuthUser(id: number) {
+    return this.prismaService.user.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        company: true,
+        employee: true,
+      },
+    });
+  }
+
   async signIn(email: string, pass: string) {
     const user = await this.prismaService.user.findFirst({
       where: { email },
