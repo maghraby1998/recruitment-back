@@ -11,7 +11,7 @@ import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from 'src/employee/dtos/create-employee.dto';
 import { Public } from 'src/decorators/public.decorator';
 import { Response } from 'express';
-import { Employee } from 'generated/prisma/client';
+import { Employee, User } from 'generated/prisma/client';
 import { UserService } from 'src/user/user.service';
 import { ParseIntPipe } from '@nestjs/common';
 
@@ -30,18 +30,26 @@ export class EmployeeResolver {
   ) {
     const { employee, accessToken } =
       await this.employeeService.createEmployee(input);
-    this.storeAccessTokenInCookie(context, accessToken);
+    this.storeAccessTokenInCookie(context, accessToken, employee.user);
     return employee;
   }
 
-  storeAccessTokenInCookie(context: { res: Response }, accessToken: string) {
-    context.res.cookie('access_token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: '/',
-    });
+  storeAccessTokenInCookie(
+    context: { res: Response },
+    accessToken: string,
+    user: User,
+  ) {
+    context.res.cookie(
+      'autn_info',
+      JSON.stringify({ accessToken, user_type: user.user_type }),
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        path: '/',
+      },
+    );
   }
 
   @Query()
