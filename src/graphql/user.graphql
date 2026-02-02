@@ -6,7 +6,7 @@ enum UserType {
 type User {
   id: ID!
   email: String!
-  userType: UserType
+  user_type: UserType
   employee: Employee
   company: Company
 }

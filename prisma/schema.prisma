@@ -26,6 +26,11 @@ enum ApplicationStatus {
   CANCELLED
 }
 
+enum JobPostStatus {
+  OPEN
+  CLOSED
+}
+
 model User {
   id        Int       @id @default(autoincrement())
   email     String    @unique
@@ -70,6 +75,7 @@ model JobPost {
   companyId    Int
   company      Copmany       @relation(fields: [companyId], references: [id])
   applications Application[]
+  status       JobPostStatus @default(OPEN)
 
   @@map("job_posts")
 }
