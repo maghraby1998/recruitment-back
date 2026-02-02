@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateEmployeeDto } from 'src/employee/dtos/create-employee.dto';
 import * as bcrypt from 'bcrypt';
@@ -10,6 +10,20 @@ export class EmployeeService {
     private prismaService: PrismaService,
     private jwtService: JwtService,
   ) {}
+
+  async getEmployeeById(id: number) {
+    const employee = await this.prismaService.employee.findUnique({
+      where: { id },
+      include: {
+        user: true,
+      },
+    });
+    if (employee) {
+      return employee;
+    } else {
+      throw new NotFoundException('Employee not found');
+    }
+  }
 
   async createEmployee(input: CreateEmployeeDto) {
     return this.prismaService.$transaction(async (prisma) => {
@@ -33,6 +47,9 @@ export class EmployeeService {
           userId: user.id,
           firstName: input.firstName,
           lastName: input.lastName,
+        },
+        include: {
+          user: true,
         },
       });
 

@@ -15,3 +15,7 @@ input CreateCompanyInput {
 type Mutation {
   createCompany(input: CreateCompanyInput!): Company!
 }
+
+type Query {
+  company(id: ID!): Company!
+}

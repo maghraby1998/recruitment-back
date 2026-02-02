@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { Copmany, Employee } from 'generated/prisma/client';
 
 @Injectable()
 export class UserService {
@@ -25,5 +26,21 @@ export class UserService {
     const accessToken = await this.jwtService.signAsync(payload);
 
     return { user, accessToken };
+  }
+
+  async getUserByCompany(company: Copmany) {
+    return this.prismaService.user.findFirst({
+      where: {
+        id: company.userId,
+      },
+    });
+  }
+
+  async getUserByEmployee(employee: Employee) {
+    return this.prismaService.user.findFirst({
+      where: {
+        id: employee.userId,
+      },
+    });
   }
 }

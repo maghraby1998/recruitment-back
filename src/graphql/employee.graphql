@@ -13,6 +13,10 @@ input CreateEmployeeInput {
   confirmPassword: String!
 }
 
+type Query {
+  employee(id: ID!): Employee!
+}
+
 type Mutation {
   createEmployee(input: CreateEmployeeInput!): Employee!
 }
