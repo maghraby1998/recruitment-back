@@ -31,6 +31,12 @@ enum JobPostStatus {
   CLOSED
 }
 
+enum JobPostQuestionType {
+  RADIO
+  TEXT
+  TEXTAREA
+}
+
 model User {
   id        Int       @id @default(autoincrement())
   email     String    @unique
@@ -81,12 +87,65 @@ model JobPost {
 }
 
 model Application {
-  id         Int               @id @default(autoincrement())
-  employeeId Int
-  employee   Employee          @relation(fields: [employeeId], references: [id])
-  jobPostId  Int
-  jobPost    JobPost           @relation(fields: [jobPostId], references: [id])
-  status     ApplicationStatus @default(PENDING)
+  id                 Int                  @id @default(autoincrement())
+  employeeId         Int
+  employee           Employee             @relation(fields: [employeeId], references: [id])
+  jobPostId          Int
+  jobPost            JobPost              @relation(fields: [jobPostId], references: [id])
+  status             ApplicationStatus    @default(PENDING)
+  jobPostFormAnswers JobPostFormAnswers[]
 
   @@map("applications")
+}
+
+model JobPostForm {
+  id                 Int                  @id @default(autoincrement())
+  requireCV          Boolean
+  questions          Question[]
+  jobPostFormAnswers JobPostFormAnswers[]
+
+  @@map("job_post_forms")
+}
+
+model Question {
+  id              Int                 @id @default(autoincrement())
+  label           String
+  isRequired      Boolean
+  jobPostFormId   Int
+  jobPostForm     JobPostForm         @relation(fields: [jobPostFormId], references: [id])
+  type            JobPostQuestionType
+  questionOptions QuestionOptions[]
+  answers         Answer[]
+
+  @@map("questions")
+}
+
+model QuestionOptions {
+  id         Int      @id @default(autoincrement())
+  value      String
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id])
+
+  @@map("radio_question_options")
+}
+
+model Answer {
+  id                   Int                @id @default(autoincrement())
+  jobPostFormAnswersId Int
+  jobPostFormAnswers   JobPostFormAnswers @relation(fields: [jobPostFormAnswersId], references: [id])
+  questionId           Int
+  question             Question           @relation(fields: [questionId], references: [id])
+
+  @@map("answers")
+}
+
+model JobPostFormAnswers {
+  id            Int         @id @default(autoincrement())
+  answers       Answer[]
+  jobPostFormId Int
+  jobPostForm   JobPostForm @relation(fields: [jobPostFormId], references: [id])
+  applicationId Int
+  application   Application @relation(fields: [applicationId], references: [id])
+
+  @@map("job_post_form_answers")
 }
