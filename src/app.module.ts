@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
 import { EmployeeModule } from './employee/employee.module';
 import { CompanyModule } from './company/company.module';
+import { JobPostModule } from './job-post/job-post.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CompanyModule } from './company/company.module';
     }),
     EmployeeModule,
     CompanyModule,
+    JobPostModule,
   ],
   controllers: [AppController],
   providers: [

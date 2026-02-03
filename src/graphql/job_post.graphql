@@ -1,6 +1,28 @@
+enum JobPostStatus {
+  OPEN
+  CLOSED
+}
+
 type JobPost {
   id: ID!
   title: String!
   description: String!
   company: Company!
+  status: JobPostStatus
+}
+
+input CreateJobPostInput {
+  title: String
+  description: String
+}
+
+type Mutation {
+  createJobPost(input: CreateJobPostInput): JobPost
+  deleteJobPost(id: ID!): JobPost
+  toggleJobPostStatus(id: ID!): JobPost
+}
+
+type Query {
+  jobPosts: [JobPost]
+  myJobPosts: [JobPost]
 }
