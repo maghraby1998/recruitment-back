@@ -24,7 +24,7 @@ type JobPostForm {
   questions: [Question]
 }
 
-input Question {
+type Question {
   id: ID
   label: String
   isRquired: Boolean
