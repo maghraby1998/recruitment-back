@@ -3,17 +3,63 @@ enum JobPostStatus {
   CLOSED
 }
 
+enum QuestionType {
+  TEXT
+  TEXTAREA
+  RADIO
+}
+
 type JobPost {
   id: ID!
   title: String!
   description: String!
   company: Company!
   status: JobPostStatus
+  form: JobPostForm
+}
+
+type JobPostForm {
+  id: ID
+  requireCV: Boolean
+  questions: [Question]
+}
+
+input Question {
+  id: ID
+  label: String
+  isRquired: Boolean
+  type: QuestionType
+  options: [QuestionOption]
+}
+
+type QuestionOption {
+  id: ID
+  value: String
 }
 
 input CreateJobPostInput {
   title: String
   description: String
+  form: JobPostFormInput
+}
+
+input JobPostFormInput {
+  id: ID
+  questions: [QuestionInput]
+  requireCV: Boolean
+}
+
+input QuestionOptionInput {
+  id: ID
+  value: String
+}
+
+input QuestionInput {
+  id: ID
+  label: String
+  isRquired: Boolean
+  type: QuestionType
+  options: [QuestionOptionInput]
 }
 
 type Mutation {

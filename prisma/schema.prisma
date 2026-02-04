@@ -82,6 +82,7 @@ model JobPost {
   company      Copmany       @relation(fields: [companyId], references: [id])
   applications Application[]
   status       JobPostStatus @default(OPEN)
+  jobPostForm  JobPostForm?
 
   @@map("job_posts")
 }
@@ -103,6 +104,8 @@ model JobPostForm {
   requireCV          Boolean
   questions          Question[]
   jobPostFormAnswers JobPostFormAnswers[]
+  jobPostId          Int                  @unique
+  jobPost            JobPost              @relation(fields: [jobPostId], references: [id])
 
   @@map("job_post_forms")
 }

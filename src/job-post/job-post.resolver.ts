@@ -41,4 +41,9 @@ export class JobPostResolver {
   async company(@Parent() jobPost: JobPost) {
     return this.companyService.getCompanyById(Number(jobPost.companyId));
   }
+
+  @ResolveField()
+  async form(@Parent() jobPost: JobPost) {
+    return this.jobPostService.getJobPostForm(Number(jobPost.id));
+  }
 }

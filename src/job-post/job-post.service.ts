@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateJobPostDto } from './dtos/create-job-post.dto';
+import { Question } from 'generated/prisma/client';
 
 @Injectable()
 export class JobPostService {
@@ -41,7 +42,43 @@ export class JobPostService {
       data: {
         title: input.title,
         description: input.description,
-        companyId: company?.id,
+        companyId: company.id,
+        jobPostForm: input.form
+          ? {
+              create: {
+                requireCV: input.form.requireCV,
+                questions: {
+                  create:
+                    input.form.questions?.map((question) => ({
+                      label: question.label,
+                      isRequired: question.isRequired,
+                      type: question.type,
+                      questionOptions: {
+                        create:
+                          question.options?.map((option) => ({
+                            value: option.value,
+                          })) || [],
+                      },
+                    })) || [],
+                },
+              },
+            }
+          : undefined,
+      },
+    });
+  }
+
+  async getJobPostForm(jobPostId: number) {
+    return this.prismaService.jobPostForm.findUnique({
+      where: {
+        jobPostId,
+      },
+      include: {
+        questions: {
+          include: {
+            questionOptions: true,
+          },
+        },
       },
     });
   }
