@@ -27,7 +27,7 @@ type JobPostForm {
 type Question {
   id: ID
   label: String
-  isRquired: Boolean
+  isRequired: Boolean
   type: QuestionType
   options: [QuestionOption]
 }
@@ -57,7 +57,7 @@ input QuestionOptionInput {
 input QuestionInput {
   id: ID
   label: String
-  isRquired: Boolean
+  isRequired: Boolean
   type: QuestionType
   options: [QuestionOptionInput]
 }
