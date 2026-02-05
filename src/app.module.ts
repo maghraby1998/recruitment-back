@@ -6,12 +6,14 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UserModule } from './user/user.module';
 import { PrismaService } from './prisma.service';
 import { JwtModule } from '@nestjs/jwt';
-import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
 import { EmployeeModule } from './employee/employee.module';
 import { CompanyModule } from './company/company.module';
 import { JobPostModule } from './job-post/job-post.module';
 import { ApplicationModule } from './application/application.module';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -30,15 +32,28 @@ import { ApplicationModule } from './application/application.module';
     CompanyModule,
     JobPostModule,
     ApplicationModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'uploads'),
+      serveRoot: '/uploads',
+      serveStaticOptions: {
+        index: false,
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [
     AppService,
     PrismaService,
     {
-      provide: APP_GUARD,
+      provide: 'APP_GUARD',
       useClass: AuthGuard,
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer) {
+    consumer
+      .apply(graphqlUploadExpress({ maxFileSize: 15000000, maxFiles: 1 }))
+      .forRoutes('*');
+  }
+}

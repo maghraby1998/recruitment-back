@@ -2,6 +2,7 @@ type Company {
   id: ID!
   name: String!
   user: User!
+  imgPath: String
 }
 
 input CreateCompanyInput {
@@ -13,7 +14,7 @@ input CreateCompanyInput {
 }
 
 type Mutation {
-  createCompany(input: CreateCompanyInput!): Company!
+  createCompany(input: CreateCompanyInput!, image: Upload): Company!
 }
 
 type Query {

@@ -25,6 +25,7 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+
     if (isPublic) {
       // 💡 See this condition
       return true;
@@ -59,7 +60,11 @@ export class AuthGuard implements CanActivate {
 
   private extractToken(request: Request): string | undefined {
     // First check for token in cookies
-    const cookieToken = request.cookies?.access_token;
+
+    const cookieToken = JSON.parse(
+      request.cookies?.auth_info ?? `{}`,
+    )?.accessToken;
+
     if (cookieToken) {
       return cookieToken;
     }

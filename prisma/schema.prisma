@@ -57,6 +57,7 @@ model Employee {
   country_code String?
   phone        String?
   applications Application[]
+  imgPath      String?
 
   @@map("user_profiles")
 }
@@ -70,6 +71,7 @@ model Copmany {
   description String?
   location    String?
   jobPosts    JobPost[]
+  imgPath     String?
 
   @@map("company_profiles")
 }

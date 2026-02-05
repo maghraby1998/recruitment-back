@@ -57,6 +57,7 @@ export class UserResolver {
     );
   }
 
+  @Public()
   @Mutation()
   async logOut(@Context() context: { res: Response; req: Request }) {
     context.res.clearCookie('auth_info', {

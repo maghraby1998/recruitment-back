@@ -15,7 +15,7 @@ import { Copmany, User } from 'generated/prisma/client';
 import { UserService } from 'src/user/user.service';
 import { ParseIntPipe } from '@nestjs/common';
 
-@Resolver()
+@Resolver('Company')
 export class CompanyResolver {
   constructor(
     private companyService: CompanyService,
@@ -26,10 +26,13 @@ export class CompanyResolver {
   @Mutation()
   async createCompany(
     @Args('input') input: CreateCompanyDto,
+    @Args('image') image: any,
     @Context() context: { res: Response },
   ) {
-    const { company, accessToken } =
-      await this.companyService.createCompany(input);
+    const { company, accessToken } = await this.companyService.createCompany(
+      input,
+      image?.file,
+    );
     this.storeAccessTokenInCookie(context, accessToken, company.user);
     return company;
   }

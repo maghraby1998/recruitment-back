@@ -25,3 +25,5 @@ type Mutation {
   signIn(input: SignInInput!): User!
   logOut: Boolean!
 }
+
+scalar Upload
