@@ -12,7 +12,7 @@ import { JobPost, User } from 'generated/prisma/client';
 import { CompanyService } from 'src/company/company.service';
 import { CreateJobPostDto } from './dtos/create-job-post.dto';
 
-@Resolver()
+@Resolver('JobPost')
 export class JobPostResolver {
   constructor(
     private jobPostService: JobPostService,
