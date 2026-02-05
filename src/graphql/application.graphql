@@ -6,9 +6,25 @@ enum ApplicationStatus {
 }
 
 type Application {
-  id: ID!
-  jobPost: JobPost!
-  employee: Employee!
-  company: Company!
-  status: ApplicationStatus!
+  id: ID
+  jobPost: JobPost
+  employee: Employee
+  status: ApplicationStatus
+  CVFilePath: String
+  answers: [Answer]
+}
+
+type Mutation {
+  applyForJob(input: ApplyForJobInput): Application
+}
+
+input AnswerInput {
+  questiondId: ID!
+  value: String!
+}
+
+input ApplyForJobInput {
+  jobPostId: ID!
+  answers: [AnswerInput]
+  # CVFile: Upload
 }

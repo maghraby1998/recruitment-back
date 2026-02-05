@@ -11,6 +11,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { EmployeeModule } from './employee/employee.module';
 import { CompanyModule } from './company/company.module';
 import { JobPostModule } from './job-post/job-post.module';
+import { ApplicationModule } from './application/application.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { JobPostModule } from './job-post/job-post.module';
     EmployeeModule,
     CompanyModule,
     JobPostModule,
+    ApplicationModule,
   ],
   controllers: [AppController],
   providers: [

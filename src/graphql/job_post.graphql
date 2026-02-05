@@ -16,6 +16,7 @@ type JobPost {
   company: Company!
   status: JobPostStatus
   form: JobPostForm
+  applications: [Application]
 }
 
 type JobPostForm {
@@ -62,10 +63,26 @@ input QuestionInput {
   options: [QuestionOptionInput]
 }
 
+type Answer {
+  id: ID
+  value: String
+}
+
 type Mutation {
   createJobPost(input: CreateJobPostInput): JobPost
   deleteJobPost(id: ID!): JobPost
   toggleJobPostStatus(id: ID!): JobPost
+}
+
+input AnswerInput {
+  questiondId: ID!
+  value: String!
+}
+
+input ApplyForJobInput {
+  jobPostId: ID!
+  answers: [AnswerInput]
+  # CVFile: Upload
 }
 
 type Query {

@@ -138,6 +138,7 @@ model Answer {
   jobPostFormAnswers   JobPostFormAnswers @relation(fields: [jobPostFormAnswersId], references: [id])
   questionId           Int
   question             Question           @relation(fields: [questionId], references: [id])
+  value                String
 
   @@map("answers")
 }
