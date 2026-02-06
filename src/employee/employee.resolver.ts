@@ -40,7 +40,7 @@ export class EmployeeResolver {
     user: User,
   ) {
     context.res.cookie(
-      'autn_info',
+      'auth_info',
       JSON.stringify({ accessToken, user_type: user.user_type }),
       {
         httpOnly: true,
