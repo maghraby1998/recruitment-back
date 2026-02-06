@@ -113,14 +113,14 @@ model JobPostForm {
 }
 
 model Question {
-  id              Int                 @id @default(autoincrement())
-  label           String
-  isRequired      Boolean
-  jobPostFormId   Int
-  jobPostForm     JobPostForm         @relation(fields: [jobPostFormId], references: [id])
-  type            JobPostQuestionType
-  questionOptions QuestionOptions[]
-  answers         Answer[]
+  id            Int                 @id @default(autoincrement())
+  label         String
+  isRequired    Boolean
+  jobPostFormId Int
+  jobPostForm   JobPostForm         @relation(fields: [jobPostFormId], references: [id])
+  type          JobPostQuestionType
+  options       QuestionOptions[]
+  answers       Answer[]
 
   @@map("questions")
 }

@@ -11,6 +11,7 @@ import { Auth } from 'src/decorators/auth.decorator';
 import { JobPost, User } from 'generated/prisma/client';
 import { CompanyService } from 'src/company/company.service';
 import { CreateJobPostDto } from './dtos/create-job-post.dto';
+import { ParseIntPipe } from '@nestjs/common';
 
 @Resolver('JobPost')
 export class JobPostResolver {
@@ -27,6 +28,11 @@ export class JobPostResolver {
   @Query()
   async myJobPosts(@Auth() auth: User) {
     return this.jobPostService.getMyJobPosts(Number(auth.id));
+  }
+
+  @Query()
+  async jobPost(@Args('id', ParseIntPipe) id: number) {
+    return this.jobPostService.getJobPost(id);
   }
 
   @Mutation()

@@ -7,6 +7,12 @@ import { Question } from 'generated/prisma/client';
 export class JobPostService {
   constructor(private prismaService: PrismaService) {}
 
+  async getJobPost(id: number) {
+    return this.prismaService.jobPost.findUnique({
+      where: { id },
+    });
+  }
+
   async getJobPosts() {
     return this.prismaService.jobPost.findMany();
   }
@@ -53,7 +59,7 @@ export class JobPostService {
                       label: question.label,
                       isRequired: question.isRequired,
                       type: question.type,
-                      questionOptions: {
+                      options: {
                         create:
                           question.options?.map((option) => ({
                             value: option.value,
@@ -76,7 +82,7 @@ export class JobPostService {
       include: {
         questions: {
           include: {
-            questionOptions: true,
+            options: true,
           },
         },
       },

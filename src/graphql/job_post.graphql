@@ -88,4 +88,5 @@ input ApplyForJobInput {
 type Query {
   jobPosts: [JobPost]
   myJobPosts: [JobPost]
+  jobPost(id: ID!): JobPost
 }
