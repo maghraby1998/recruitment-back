@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class ApplicationAnswersDto {
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  questionId: number;
+  questionId: string;
 
   @IsString()
   @IsNotEmpty()

@@ -36,7 +36,7 @@ export class ApplicationService {
                   jobPostFormId: jobPostForm?.id,
                   answers: {
                     create: input.answers?.map((answer) => ({
-                      questionId: answer.questionId,
+                      questionId: Number(answer.questionId),
                       value: answer.value,
                     })),
                   },

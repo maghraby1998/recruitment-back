@@ -12,12 +12,16 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       exceptionFactory: (errors: any) => {
+        console.log('errors', errors);
+
         let validations = {};
 
         errors.forEach((error) => {
-          validations[error.property] = Object.values(error.constraints).join(
-            ', ',
-          );
+          if (error?.constraints) {
+            validations[error.property] = Object.values(error.constraints).join(
+              ', ',
+            );
+          }
         });
 
         return new UserInputError('error', {
