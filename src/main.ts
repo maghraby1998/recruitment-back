@@ -12,19 +12,36 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       exceptionFactory: (errors: any) => {
-        console.log('errors', errors);
+        console.log('Validation errors:', JSON.stringify(errors, null, 2));
 
-        let validations = {};
+        const formatErrors = (errors: any[], parentPath = '') => {
+          let validations = {};
 
-        errors.forEach((error) => {
-          if (error?.constraints) {
-            validations[error.property] = Object.values(error.constraints).join(
-              ', ',
-            );
-          }
-        });
+          errors.forEach((error) => {
+            const propertyPath = parentPath
+              ? `${parentPath}.${error.property}`
+              : error.property;
 
-        return new UserInputError('error', {
+            // Handle direct constraints
+            if (error?.constraints) {
+              validations[propertyPath] = Object.values(
+                error.constraints,
+              ).join(', ');
+            }
+
+            // Handle nested validation errors
+            if (error?.children && error.children.length > 0) {
+              const nestedErrors = formatErrors(error.children, propertyPath);
+              validations = { ...validations, ...nestedErrors };
+            }
+          });
+
+          return validations;
+        };
+
+        const validations = formatErrors(errors);
+
+        return new UserInputError('Validation failed', {
           extensions: { validations, category: 'validation' },
         });
       },

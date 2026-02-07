@@ -18,7 +18,7 @@ export class ApplicationService {
     }
     const jobPostForm = await this.prismaService.jobPostForm.findUnique({
       where: {
-        jobPostId: input.jobPostId,
+        jobPostId: Number(input.jobPostId),
       },
       select: {
         id: true,
@@ -28,7 +28,7 @@ export class ApplicationService {
     return this.prismaService.application.create({
       data: {
         employeeId: employee?.id,
-        jobPostId: input.jobPostId,
+        jobPostId: Number(input.jobPostId),
         ...(!!jobPostForm
           ? {
               jobPostFormAnswers: {

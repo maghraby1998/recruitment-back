@@ -88,4 +88,12 @@ export class JobPostService {
       },
     });
   }
+
+  async getJobPostNumberOfApplications(jobPostId: number) {
+    return this.prismaService.application.count({
+      where: {
+        jobPostId,
+      },
+    });
+  }
 }

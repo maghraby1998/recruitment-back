@@ -17,6 +17,7 @@ type JobPost {
   status: JobPostStatus
   form: JobPostForm
   applications: [Application]
+  applicationsNumber: Int
 }
 
 type JobPostForm {
@@ -75,7 +76,7 @@ type Mutation {
 }
 
 input AnswerInput {
-  questiondId: ID!
+  questionId: ID!
   value: String!
 }
 

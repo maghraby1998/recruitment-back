@@ -3,14 +3,15 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 import { ApplicationAnswersDto } from './application-answers.dto';
 
 export class CreateJobApplicationDto {
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  jobPostId: number;
+  jobPostId: string;
 
   @IsOptional()
   @ValidateNested({ each: true })

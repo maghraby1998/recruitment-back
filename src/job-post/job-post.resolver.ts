@@ -52,4 +52,9 @@ export class JobPostResolver {
   async form(@Parent() jobPost: JobPost) {
     return this.jobPostService.getJobPostForm(Number(jobPost.id));
   }
+
+  @ResolveField()
+  async applicationsNumber(@Parent() jobPost: JobPost) {
+    return this.jobPostService.getJobPostNumberOfApplications(jobPost.id);
+  }
 }
