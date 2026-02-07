@@ -12,8 +12,6 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       exceptionFactory: (errors: any) => {
-        console.log('Validation errors:', JSON.stringify(errors, null, 2));
-
         const formatErrors = (errors: any[], parentPath = '') => {
           let validations = {};
 
@@ -24,9 +22,9 @@ async function bootstrap() {
 
             // Handle direct constraints
             if (error?.constraints) {
-              validations[propertyPath] = Object.values(
-                error.constraints,
-              ).join(', ');
+              validations[propertyPath] = Object.values(error.constraints).join(
+                ', ',
+              );
             }
 
             // Handle nested validation errors

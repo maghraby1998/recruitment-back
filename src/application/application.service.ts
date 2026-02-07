@@ -62,4 +62,12 @@ export class ApplicationService {
       },
     });
   }
+
+  async getJobPostApplications(jobPostId) {
+    return this.prismaService.application.findMany({
+      where: {
+        jobPostId,
+      },
+    });
+  }
 }

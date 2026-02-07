@@ -2,6 +2,7 @@ import {
   Args,
   Mutation,
   Parent,
+  Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
@@ -11,6 +12,7 @@ import { Auth } from 'src/decorators/auth.decorator';
 import { Application, User } from 'generated/prisma/client';
 import { JobPostService } from 'src/job-post/job-post.service';
 import { EmployeeService } from 'src/employee/employee.service';
+import { ParseIntPipe } from '@nestjs/common';
 
 @Resolver('Application')
 export class ApplicationResolver {
@@ -42,5 +44,12 @@ export class ApplicationResolver {
     return this.applicationService.getAnswersByApplicationId(
       Number(application.id),
     );
+  }
+
+  @Query()
+  async getJobPostApplications(
+    @Args('jobPostId', ParseIntPipe) jobPostId: number,
+  ) {
+    return this.applicationService.getJobPostApplications(jobPostId);
   }
 }

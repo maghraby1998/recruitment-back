@@ -26,10 +26,13 @@ export class EmployeeResolver {
   @Mutation()
   async createEmployee(
     @Args('input') input: CreateEmployeeDto,
+    @Args('image') image: any,
     @Context() context: { res: Response },
   ) {
-    const { employee, accessToken } =
-      await this.employeeService.createEmployee(input);
+    const { employee, accessToken } = await this.employeeService.createEmployee(
+      input,
+      image?.file,
+    );
     this.storeAccessTokenInCookie(context, accessToken, employee.user);
     return employee;
   }

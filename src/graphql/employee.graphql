@@ -3,6 +3,7 @@ type Employee {
   firstName: String!
   lastName: String!
   user: User!
+  imgPath: String
 }
 
 input CreateEmployeeInput {
@@ -18,5 +19,5 @@ type Query {
 }
 
 type Mutation {
-  createEmployee(input: CreateEmployeeInput!): Employee!
+  createEmployee(input: CreateEmployeeInput!, image: Upload): Employee!
 }
