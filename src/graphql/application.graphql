@@ -19,7 +19,9 @@ type Mutation {
 }
 
 type Query {
+  application(id: ID!): Application
   getJobPostApplications(jobPostId: ID!): [Application]
+  getMyApplications: [Application]
 }
 
 input AnswerInput {

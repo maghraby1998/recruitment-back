@@ -52,4 +52,14 @@ export class ApplicationResolver {
   ) {
     return this.applicationService.getJobPostApplications(jobPostId);
   }
+
+  @Query()
+  async getMyApplications(@Auth() auth: User) {
+    return this.applicationService.getMyApplications(Number(auth.id));
+  }
+
+  @Query()
+  async application(@Args('id', ParseIntPipe) id: number) {
+    return this.applicationService.getApplicationById(id);
+  }
 }

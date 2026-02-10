@@ -10,6 +10,14 @@ export class ApplicationService {
     private employeeService: EmployeeService,
   ) {}
 
+  async getApplicationById(id: number) {
+    return this.prismaService.application.findUnique({
+      where: {
+        id: id,
+      },
+    });
+  }
+
   async createJobApplication(userId: number, input: CreateJobApplicationDto) {
     const employee = await this.employeeService.getEmployeeByUserId(userId);
 
@@ -67,6 +75,14 @@ export class ApplicationService {
     return this.prismaService.application.findMany({
       where: {
         jobPostId,
+      },
+    });
+  }
+
+  async getMyApplications(authId: number) {
+    return this.prismaService.application.findMany({
+      where: {
+        employeeId: authId,
       },
     });
   }

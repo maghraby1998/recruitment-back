@@ -67,6 +67,7 @@ input QuestionInput {
 type Answer {
   id: ID
   value: String
+  questionId: ID
 }
 
 type Mutation {
