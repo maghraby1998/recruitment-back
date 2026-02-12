@@ -14,6 +14,7 @@ import { ApplicationModule } from './application/application.module';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { DateTimeScalar } from './date-time.scalar';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
   providers: [
     AppService,
     PrismaService,
+    DateTimeScalar,
     {
       provide: 'APP_GUARD',
       useClass: AuthGuard,

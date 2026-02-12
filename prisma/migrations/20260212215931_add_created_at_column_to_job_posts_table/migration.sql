@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `job_posts` ADD COLUMN `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
