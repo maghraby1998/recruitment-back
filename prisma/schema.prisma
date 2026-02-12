@@ -147,6 +147,7 @@ model Answer {
 
 model JobPostFormAnswers {
   id            Int         @id @default(autoincrement())
+  CVFilePath    String?
   answers       Answer[]
   jobPostFormId Int
   jobPostForm   JobPostForm @relation(fields: [jobPostFormId], references: [id])

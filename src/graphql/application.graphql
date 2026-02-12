@@ -15,7 +15,7 @@ type Application {
 }
 
 type Mutation {
-  applyForJob(input: ApplyForJobInput): Application
+  applyForJob(input: ApplyForJobInput, CVFilePdf: Upload): Application
 }
 
 type Query {
@@ -32,5 +32,4 @@ input AnswerInput {
 input ApplyForJobInput {
   jobPostId: ID!
   answers: [AnswerInput]
-  # CVFile: Upload
 }

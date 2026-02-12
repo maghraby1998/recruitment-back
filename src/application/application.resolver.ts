@@ -25,8 +25,13 @@ export class ApplicationResolver {
   async applyForJob(
     @Args('input') input: CreateJobApplicationDto,
     @Auth() auth: User,
+    @Args('CVFilePdf') CVFilePdf: any,
   ) {
-    return this.applicationService.createJobApplication(Number(auth.id), input);
+    return this.applicationService.createJobApplication(
+      Number(auth.id),
+      input,
+      CVFilePdf.file,
+    );
   }
 
   @ResolveField()
@@ -43,6 +48,13 @@ export class ApplicationResolver {
   async answers(@Parent() application: Application) {
     return this.applicationService.getAnswersByApplicationId(
       Number(application.id),
+    );
+  }
+
+  @ResolveField()
+  async CVFilePath(@Parent() application: Application) {
+    return this.applicationService.getCVFilePdfPathWithApplicationId(
+      application.id,
     );
   }
 

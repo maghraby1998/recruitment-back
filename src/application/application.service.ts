@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateJobApplicationDto } from './dtos/create-job-application.dto';
 import { EmployeeService } from 'src/employee/employee.service';
+import { FileUpload } from 'graphql-upload/processRequest.mjs';
+import { createWriteStream, existsSync, mkdirSync } from 'fs';
+import { unlink } from 'fs/promises';
 
 @Injectable()
 export class ApplicationService {
@@ -18,7 +25,11 @@ export class ApplicationService {
     });
   }
 
-  async createJobApplication(userId: number, input: CreateJobApplicationDto) {
+  async createJobApplication(
+    userId: number,
+    input: CreateJobApplicationDto,
+    CVFilePdf: FileUpload,
+  ) {
     const employee = await this.employeeService.getEmployeeByUserId(userId);
 
     if (!employee) {
@@ -33,27 +44,57 @@ export class ApplicationService {
       },
     });
 
-    return this.prismaService.application.create({
-      data: {
-        employeeId: employee?.id,
-        jobPostId: Number(input.jobPostId),
-        ...(!!jobPostForm
-          ? {
-              jobPostFormAnswers: {
-                create: {
-                  jobPostFormId: jobPostForm?.id,
-                  answers: {
-                    create: input.answers?.map((answer) => ({
-                      questionId: Number(answer.questionId),
-                      value: answer.value,
-                    })),
+    let pdfName: string | undefined;
+
+    if (CVFilePdf) {
+      const uploadsDir = './uploads';
+
+      if (!existsSync(uploadsDir)) {
+        mkdirSync(uploadsDir, { recursive: true });
+      }
+
+      pdfName = `${employee.id}-${new Date().toDateString()}-${CVFilePdf?.filename}`;
+
+      if (!['application/pdf'].includes(CVFilePdf.mimetype)) {
+        throw new BadRequestException('Only PDF files are allowed');
+      }
+
+      CVFilePdf?.createReadStream().pipe(
+        createWriteStream('./uploads/' + pdfName),
+      );
+    }
+
+    try {
+      const application = await this.prismaService.application.create({
+        data: {
+          employeeId: employee?.id,
+          jobPostId: Number(input.jobPostId),
+          ...(!!jobPostForm
+            ? {
+                jobPostFormAnswers: {
+                  create: {
+                    jobPostFormId: jobPostForm?.id,
+                    CVFilePath: `/uploads/${pdfName}`,
+                    answers: {
+                      create: input.answers?.map((answer) => ({
+                        questionId: Number(answer.questionId),
+                        value: answer.value,
+                      })),
+                    },
                   },
                 },
-              },
-            }
-          : {}),
-      },
-    });
+              }
+            : {}),
+        },
+      });
+
+      return application;
+    } catch (err) {
+      if (pdfName) {
+        await unlink(`/uploads/${pdfName}`);
+        throw err;
+      }
+    }
   }
 
   async getAnswersByApplicationId(applicationId: number) {
@@ -85,5 +126,16 @@ export class ApplicationService {
         employeeId: authId,
       },
     });
+  }
+
+  async getCVFilePdfPathWithApplicationId(id: number) {
+    const jobPostFormAnswers =
+      await this.prismaService.jobPostFormAnswers.findFirst({
+        where: {
+          applicationId: id,
+        },
+      });
+
+    return jobPostFormAnswers?.CVFilePath;
   }
 }
