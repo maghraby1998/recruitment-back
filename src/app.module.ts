@@ -16,6 +16,7 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { DateTimeScalar } from './date-time.scalar';
 import { PositionModule } from './position/position.module';
+import { SkillModule } from './skill/skill.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { PositionModule } from './position/position.module';
       },
     }),
     PositionModule,
+    SkillModule,
   ],
   controllers: [AppController],
   providers: [

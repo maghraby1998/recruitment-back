@@ -64,6 +64,7 @@ model Employee {
   country      Country?      @relation(fields: [countryId], references: [id])
   cityId       Int?
   city         City?         @relation(fields: [cityId], references: [id])
+  skills       Skill[]
 
   @@map("user_profiles")
 }
@@ -186,4 +187,10 @@ model City {
   name      String
   employees Employee[]
   copmanies Copmany[]
+}
+
+model Skill {
+  id        Int        @id @default(autoincrement())
+  name      String
+  employees Employee[]
 }
