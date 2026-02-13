@@ -58,8 +58,20 @@ model Employee {
   phone        String?
   applications Application[]
   imgPath      String?
+  positionId   Int?
+  position     Position?     @relation(fields: [positionId], references: [id])
+  countryId    Int?
+  country      Country?      @relation(fields: [countryId], references: [id])
+  cityId       Int?
+  city         City?         @relation(fields: [cityId], references: [id])
 
   @@map("user_profiles")
+}
+
+model Position {
+  id        Int        @id @default(autoincrement())
+  title     String
+  employees Employee[]
 }
 
 model Copmany {
@@ -72,6 +84,10 @@ model Copmany {
   location    String?
   jobPosts    JobPost[]
   imgPath     String?
+  countryId   Int?
+  country     Country?  @relation(fields: [countryId], references: [id])
+  cityId      Int?
+  city        City?     @relation(fields: [cityId], references: [id])
 
   @@map("company_profiles")
 }
@@ -156,4 +172,18 @@ model JobPostFormAnswers {
   application   Application @relation(fields: [applicationId], references: [id])
 
   @@map("job_post_form_answers")
+}
+
+model Country {
+  id        Int        @id @default(autoincrement())
+  name      String
+  employees Employee[]
+  copmanies Copmany[]
+}
+
+model City {
+  id        Int        @id @default(autoincrement())
+  name      String
+  employees Employee[]
+  copmanies Copmany[]
 }

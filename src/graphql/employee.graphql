@@ -4,6 +4,9 @@ type Employee {
   lastName: String!
   user: User!
   imgPath: String
+  country: County
+  city: City
+  position: Position
 }
 
 input CreateEmployeeInput {

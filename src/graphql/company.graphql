@@ -3,6 +3,8 @@ type Company {
   name: String!
   user: User!
   imgPath: String
+  country: County
+  city: City
 }
 
 input CreateCompanyInput {

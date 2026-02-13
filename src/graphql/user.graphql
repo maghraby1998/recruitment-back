@@ -27,3 +27,13 @@ type Mutation {
 }
 
 scalar Upload
+
+type Country {
+  id: ID
+  name: String
+}
+
+type City {
+  id: ID
+  name: String
+}
