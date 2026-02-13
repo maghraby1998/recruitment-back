@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateJobApplicationDto } from './dtos/create-job-application.dto';
@@ -9,6 +10,7 @@ import { EmployeeService } from 'src/employee/employee.service';
 import { FileUpload } from 'graphql-upload/processRequest.mjs';
 import { createWriteStream, existsSync, mkdirSync } from 'fs';
 import { unlink } from 'fs/promises';
+import { ApplicationStatus } from 'generated/prisma/enums';
 
 @Injectable()
 export class ApplicationService {
@@ -137,5 +139,14 @@ export class ApplicationService {
       });
 
     return jobPostFormAnswers?.CVFilePath;
+  }
+
+  async updateApplicationStatus(id: number, status: ApplicationStatus) {
+    return this.prismaService.application.update({
+      where: { id },
+      data: {
+        status,
+      },
+    });
   }
 }

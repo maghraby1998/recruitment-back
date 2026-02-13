@@ -21,6 +21,7 @@ type JobPost {
   applications: [Application]
   applicationsNumber: Int
   created_at: DateTime
+  canApply: Boolean
 }
 
 type JobPostForm {

@@ -57,4 +57,9 @@ export class JobPostResolver {
   async applicationsNumber(@Parent() jobPost: JobPost) {
     return this.jobPostService.getJobPostNumberOfApplications(jobPost.id);
   }
+
+  @ResolveField()
+  async canApply(@Parent() jobPost: JobPost, @Auth() auth: User) {
+    return this.jobPostService.canApply(auth.id, jobPost.id);
+  }
 }

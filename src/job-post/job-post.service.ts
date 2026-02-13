@@ -96,4 +96,26 @@ export class JobPostService {
       },
     });
   }
+
+  async canApply(authId: number, jobPostId: number) {
+    const employee = await this.prismaService.employee.findFirst({
+      where: {
+        userId: authId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (employee) {
+      const application = await this.prismaService.application.findFirst({
+        where: {
+          employeeId: employee.id,
+          jobPostId,
+        },
+      });
+
+      return !application;
+    }
+  }
 }

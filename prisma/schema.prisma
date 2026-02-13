@@ -21,9 +21,9 @@ enum UserType {
 
 enum ApplicationStatus {
   PENDING
-  ACCEPTED
   REJECTED
   CANCELLED
+  IN_CONSIDERATION
 }
 
 enum JobPostStatus {

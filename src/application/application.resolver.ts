@@ -9,7 +9,7 @@ import {
 import { CreateJobApplicationDto } from './dtos/create-job-application.dto';
 import { ApplicationService } from './application.service';
 import { Auth } from 'src/decorators/auth.decorator';
-import { Application, User } from 'generated/prisma/client';
+import { Application, ApplicationStatus, User } from 'generated/prisma/client';
 import { JobPostService } from 'src/job-post/job-post.service';
 import { EmployeeService } from 'src/employee/employee.service';
 import { ParseIntPipe } from '@nestjs/common';
@@ -30,7 +30,7 @@ export class ApplicationResolver {
     return this.applicationService.createJobApplication(
       Number(auth.id),
       input,
-      CVFilePdf.file,
+      CVFilePdf?.file,
     );
   }
 
@@ -73,5 +73,15 @@ export class ApplicationResolver {
   @Query()
   async application(@Args('id', ParseIntPipe) id: number) {
     return this.applicationService.getApplicationById(id);
+  }
+
+  @Mutation()
+  async updateApplicationStatus(
+    @Args('input') input: { id: number; status: ApplicationStatus },
+  ) {
+    return this.applicationService.updateApplicationStatus(
+      Number(input.id),
+      input.status,
+    );
   }
 }

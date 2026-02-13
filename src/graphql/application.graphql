@@ -1,8 +1,8 @@
 enum ApplicationStatus {
   PENDING
-  APPROVED
   REJECTED
   CANCELLED
+  IN_CONSIDERATION
 }
 
 type Application {
@@ -16,6 +16,7 @@ type Application {
 
 type Mutation {
   applyForJob(input: ApplyForJobInput, CVFilePdf: Upload): Application
+  updateApplicationStatus(input: UpdateApplicationStatusInput): Application
 }
 
 type Query {
@@ -32,4 +33,9 @@ input AnswerInput {
 input ApplyForJobInput {
   jobPostId: ID!
   answers: [AnswerInput]
+}
+
+input UpdateApplicationStatusInput {
+  id: ID!
+  status: ApplicationStatus
 }
