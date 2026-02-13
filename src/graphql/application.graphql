@@ -19,10 +19,15 @@ type Mutation {
   updateApplicationStatus(input: UpdateApplicationStatusInput): Application
 }
 
+type PaginatedApplications {
+  data: [Application!]!
+  meta: PaginationMeta!
+}
+
 type Query {
   application(id: ID!): Application
-  getJobPostApplications(jobPostId: ID!): [Application]
-  getMyApplications: [Application]
+  getJobPostApplications(jobPostId: ID!, pagination: PaginationInput): PaginatedApplications
+  getMyApplications(pagination: PaginationInput): PaginatedApplications
 }
 
 input AnswerInput {

@@ -2,6 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateJobPostDto } from './dtos/create-job-post.dto';
 import { Question } from 'generated/prisma/client';
+import { PaginationDto } from 'src/common/pagination.dto';
+import {
+  getPrismaPageArgs,
+  buildPaginatedResult,
+} from 'src/common/pagination.helper';
 
 @Injectable()
 export class JobPostService {
@@ -13,11 +18,22 @@ export class JobPostService {
     });
   }
 
-  async getJobPosts() {
-    return this.prismaService.jobPost.findMany();
+  async getJobPosts(pagination?: PaginationDto) {
+    const { skip, take } = getPrismaPageArgs(pagination);
+
+    const [data, totalItems] = await Promise.all([
+      this.prismaService.jobPost.findMany({
+        skip,
+        take,
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prismaService.jobPost.count(),
+    ]);
+
+    return buildPaginatedResult(data, totalItems, pagination);
   }
 
-  async getMyJobPosts(userId: number) {
+  async getMyJobPosts(userId: number, pagination?: PaginationDto) {
     const company = await this.prismaService.copmany.findUnique({
       where: { userId },
       select: {
@@ -25,11 +41,20 @@ export class JobPostService {
       },
     });
 
-    return this.prismaService.jobPost.findMany({
-      where: {
-        companyId: company?.id,
-      },
-    });
+    const where = { companyId: company?.id };
+    const { skip, take } = getPrismaPageArgs(pagination);
+
+    const [data, totalItems] = await Promise.all([
+      this.prismaService.jobPost.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prismaService.jobPost.count({ where }),
+    ]);
+
+    return buildPaginatedResult(data, totalItems, pagination);
   }
 
   async createJobPost(userId: number, input: CreateJobPostDto) {

@@ -13,6 +13,7 @@ import { Application, ApplicationStatus, User } from 'generated/prisma/client';
 import { JobPostService } from 'src/job-post/job-post.service';
 import { EmployeeService } from 'src/employee/employee.service';
 import { ParseIntPipe } from '@nestjs/common';
+import { PaginationDto } from 'src/common/pagination.dto';
 
 @Resolver('Application')
 export class ApplicationResolver {
@@ -61,13 +62,17 @@ export class ApplicationResolver {
   @Query()
   async getJobPostApplications(
     @Args('jobPostId', ParseIntPipe) jobPostId: number,
+    @Args('pagination') pagination?: PaginationDto,
   ) {
-    return this.applicationService.getJobPostApplications(jobPostId);
+    return this.applicationService.getJobPostApplications(jobPostId, pagination);
   }
 
   @Query()
-  async getMyApplications(@Auth() auth: User) {
-    return this.applicationService.getMyApplications(Number(auth.id));
+  async getMyApplications(
+    @Auth() auth: User,
+    @Args('pagination') pagination?: PaginationDto,
+  ) {
+    return this.applicationService.getMyApplications(Number(auth.id), pagination);
   }
 
   @Query()

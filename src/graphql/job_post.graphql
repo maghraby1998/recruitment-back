@@ -85,14 +85,13 @@ input AnswerInput {
   value: String!
 }
 
-input ApplyForJobInput {
-  jobPostId: ID!
-  answers: [AnswerInput]
-  # CVFile: Upload
+type PaginatedJobPosts {
+  data: [JobPost!]!
+  meta: PaginationMeta!
 }
 
 type Query {
-  jobPosts: [JobPost]
-  myJobPosts: [JobPost]
+  jobPosts(pagination: PaginationInput): PaginatedJobPosts
+  myJobPosts(pagination: PaginationInput): PaginatedJobPosts
   jobPost(id: ID!): JobPost
 }

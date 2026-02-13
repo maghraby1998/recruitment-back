@@ -11,6 +11,11 @@ import { FileUpload } from 'graphql-upload/processRequest.mjs';
 import { createWriteStream, existsSync, mkdirSync } from 'fs';
 import { unlink } from 'fs/promises';
 import { ApplicationStatus } from 'generated/prisma/enums';
+import { PaginationDto } from 'src/common/pagination.dto';
+import {
+  getPrismaPageArgs,
+  buildPaginatedResult,
+} from 'src/common/pagination.helper';
 
 @Injectable()
 export class ApplicationService {
@@ -114,20 +119,38 @@ export class ApplicationService {
     });
   }
 
-  async getJobPostApplications(jobPostId) {
-    return this.prismaService.application.findMany({
-      where: {
-        jobPostId,
-      },
-    });
+  async getJobPostApplications(jobPostId: number, pagination?: PaginationDto) {
+    const where = { jobPostId };
+    const { skip, take } = getPrismaPageArgs(pagination);
+
+    const [data, totalItems] = await Promise.all([
+      this.prismaService.application.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { id: 'desc' },
+      }),
+      this.prismaService.application.count({ where }),
+    ]);
+
+    return buildPaginatedResult(data, totalItems, pagination);
   }
 
-  async getMyApplications(authId: number) {
-    return this.prismaService.application.findMany({
-      where: {
-        employeeId: authId,
-      },
-    });
+  async getMyApplications(authId: number, pagination?: PaginationDto) {
+    const where = { employeeId: authId };
+    const { skip, take } = getPrismaPageArgs(pagination);
+
+    const [data, totalItems] = await Promise.all([
+      this.prismaService.application.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { id: 'desc' },
+      }),
+      this.prismaService.application.count({ where }),
+    ]);
+
+    return buildPaginatedResult(data, totalItems, pagination);
   }
 
   async getCVFilePdfPathWithApplicationId(id: number) {

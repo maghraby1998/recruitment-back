@@ -1,0 +1,13 @@
+input PaginationInput {
+  page: Int = 1
+  limit: Int = 10
+}
+
+type PaginationMeta {
+  totalItems: Int!
+  totalPages: Int!
+  currentPage: Int!
+  limit: Int!
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
