@@ -49,6 +49,7 @@ class ValidateSkillName implements ValidatorConstraintInterface {
 
 export class CreateSkillDto {
   @IsString()
+  @IsOptional()
   @Validate(ValidateSkillId)
   skillId: string;
 

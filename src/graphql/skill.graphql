@@ -12,3 +12,8 @@ input CreateSkillInput {
   skillId: ID
   name: String
 }
+
+type Query {
+  skills(search: String): [Skill]
+  getMySkills: [Skill]
+}

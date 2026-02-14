@@ -61,4 +61,24 @@ export class SkillService {
       return skill;
     }
   }
+
+  async getAllSkills(search: string) {
+    return this.prismaService.skill.findMany({
+      where: search
+        ? { name: { contains: search } }
+        : undefined,
+    });
+  }
+
+  async getMySkills(authId: number) {
+    const employee = await this.prismaService.employee.findFirst({
+      where: {
+        userId: Number(authId),
+      },
+      select: {
+        skills: true,
+      },
+    });
+    return employee?.skills ?? [];
+  }
 }
