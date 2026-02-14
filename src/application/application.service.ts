@@ -137,7 +137,16 @@ export class ApplicationService {
   }
 
   async getMyApplications(authId: number, pagination?: PaginationDto) {
-    const where = { employeeId: authId };
+    const employee = await this.prismaService.employee.findFirst({
+      where: {
+        userId: authId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const where = { employeeId: employee?.id };
     const { skip, take } = getPrismaPageArgs(pagination);
 
     const [data, totalItems] = await Promise.all([

@@ -1,0 +1,14 @@
+type Skill {
+  id: ID
+  name: String
+}
+
+type Mutation {
+  createSkill(input: CreateSkillInput): Skill
+  deleteSkill(id: ID!): Skill
+}
+
+input CreateSkillInput {
+  skillId: ID
+  name: String
+}

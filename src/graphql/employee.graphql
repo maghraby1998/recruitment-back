@@ -4,7 +4,7 @@ type Employee {
   lastName: String!
   user: User!
   imgPath: String
-  country: County
+  country: Country
   city: City
   position: Position
 }
