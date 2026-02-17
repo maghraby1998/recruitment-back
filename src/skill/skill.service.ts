@@ -64,9 +64,7 @@ export class SkillService {
 
   async getAllSkills(search: string) {
     return this.prismaService.skill.findMany({
-      where: search
-        ? { name: { contains: search } }
-        : undefined,
+      where: search ? { name: { contains: search } } : undefined,
     });
   }
 

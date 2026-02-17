@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -22,4 +23,12 @@ export class CreateJobPostDto {
   @ValidateNested()
   @Type(() => JobPostFormDto)
   form?: JobPostFormDto;
+
+  @IsArray()
+  @IsOptional()
+  skillsIds: string[];
+
+  @IsArray()
+  @IsOptional()
+  skillsNames: string[];
 }

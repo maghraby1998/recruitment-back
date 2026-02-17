@@ -103,6 +103,7 @@ model JobPost {
   status       JobPostStatus @default(OPEN)
   jobPostForm  JobPostForm?
   created_at   DateTime      @default(now()) @db.Timestamp(3)
+  skills       Skill[]
 
   @@map("job_posts")
 }
@@ -193,4 +194,5 @@ model Skill {
   id        Int        @id @default(autoincrement())
   name      String
   employees Employee[]
+  jobPosts  JobPost[]
 }

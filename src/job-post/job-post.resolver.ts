@@ -66,4 +66,9 @@ export class JobPostResolver {
   async canApply(@Parent() jobPost: JobPost, @Auth() auth: User) {
     return this.jobPostService.canApply(auth.id, jobPost.id);
   }
+
+  @ResolveField()
+  async skills(@Parent() jobPost: JobPost) {
+    return this.jobPostService.getJobPostSkills(jobPost.id);
+  }
 }

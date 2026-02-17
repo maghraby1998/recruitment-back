@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateJobPostDto } from './dtos/create-job-post.dto';
-import { Question } from 'generated/prisma/client';
+import { Question, Skill } from 'generated/prisma/client';
 import { PaginationDto } from 'src/common/pagination.dto';
 import {
   getPrismaPageArgs,
@@ -74,6 +74,12 @@ export class JobPostService {
         title: input.title,
         description: input.description,
         companyId: company.id,
+        skills: {
+          connect: input.skillsIds?.map((skillId) => ({
+            id: Number(skillId),
+          })),
+          create: input.skillsNames.map((skillName) => ({ name: skillName })),
+        },
         jobPostForm: input.form
           ? {
               create: {
@@ -142,5 +148,20 @@ export class JobPostService {
 
       return !application;
     }
+  }
+
+  async getJobPostSkills(jobPostId: number) {
+    const jobPost = await this.prismaService.jobPost.findFirst({
+      where: { id: jobPostId },
+      select: {
+        skills: true,
+      },
+    });
+
+    if (!jobPost) {
+      throw new NotFoundException('job post not found');
+    }
+
+    return jobPost.skills;
   }
 }

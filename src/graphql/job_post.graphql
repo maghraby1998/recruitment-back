@@ -22,6 +22,7 @@ type JobPost {
   applicationsNumber: Int
   created_at: DateTime
   canApply: Boolean
+  skills: [Skill]
 }
 
 type JobPostForm {
@@ -46,6 +47,8 @@ type QuestionOption {
 input CreateJobPostInput {
   title: String
   description: String
+  skillsIds: [ID]
+  skillsNames: [String]
   form: JobPostFormInput
 }
 
