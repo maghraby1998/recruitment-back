@@ -59,6 +59,32 @@ export class EmployeeService {
         },
       });
 
+      if (input.positionName) {
+        const position = await prisma.position.create({
+          data: {
+            title: input.positionName,
+          },
+        });
+
+        await prisma.employee.update({
+          where: {
+            id: employee.id,
+          },
+          data: {
+            positionId: position.id,
+          },
+        });
+      } else {
+        await prisma.employee.update({
+          where: {
+            id: employee.id,
+          },
+          data: {
+            positionId: Number(input.positionId),
+          },
+        });
+      }
+
       if (image) {
         const uploadsDir = './uploads';
 

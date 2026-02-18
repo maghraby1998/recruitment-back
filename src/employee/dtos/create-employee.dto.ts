@@ -6,6 +6,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
   ValidationArguments,
+  IsOptional,
 } from 'class-validator';
 
 @ValidatorConstraint({ name: 'matchPassword', async: false })
@@ -20,6 +21,18 @@ class MatchPassword implements ValidatorConstraintInterface {
   }
 }
 
+@ValidatorConstraint({ name: 'ValidatePosition', async: false })
+class ValidatePosition implements ValidatorConstraintInterface {
+  validate(_: any, args: ValidationArguments) {
+    const obj = args.object as any;
+    return obj?.positionId || obj?.positionName;
+  }
+
+  defaultMessage() {
+    return 'Position is required';
+  }
+}
+
 export class CreateEmployeeDto {
   @IsString()
   firstName: string;
@@ -30,6 +43,16 @@ export class CreateEmployeeDto {
   @IsString()
   @IsEmail()
   email: string;
+
+  @IsString()
+  @IsOptional()
+  @Validate(ValidatePosition)
+  positionId: string;
+
+  @IsString()
+  @IsOptional()
+  @Validate(ValidatePosition)
+  positionName: string;
 
   @IsString()
   @MinLength(6)
