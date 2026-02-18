@@ -16,10 +16,6 @@ export class UserService {
       where: {
         id,
       },
-      include: {
-        company: true,
-        employee: true,
-      },
     });
   }
 

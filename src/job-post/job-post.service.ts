@@ -78,7 +78,9 @@ export class JobPostService {
           connect: input.skillsIds?.map((skillId) => ({
             id: Number(skillId),
           })),
-          create: input.skillsNames.map((skillName) => ({ name: skillName })),
+          create: input.skillsNames.map((skillName) => ({
+            name: skillName.toLowerCase(),
+          })),
         },
         jobPostForm: input.form
           ? {

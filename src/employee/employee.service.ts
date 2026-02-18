@@ -20,9 +20,6 @@ export class EmployeeService {
   async getEmployeeById(id: number) {
     const employee = await this.prismaService.employee.findUnique({
       where: { id },
-      include: {
-        user: true,
-      },
     });
     if (employee) {
       return employee;
@@ -62,7 +59,7 @@ export class EmployeeService {
       if (input.positionName) {
         const position = await prisma.position.create({
           data: {
-            title: input.positionName,
+            title: input.positionName.toLowerCase(),
           },
         });
 
@@ -124,5 +121,16 @@ export class EmployeeService {
         userId,
       },
     });
+  }
+
+  async getEmployeePosition(employeeId: number) {
+    const employee = await this.prismaService.employee.findUnique({
+      where: { id: employeeId },
+      select: {
+        position: true,
+      },
+    });
+
+    return employee?.position;
   }
 }

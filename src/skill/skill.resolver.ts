@@ -4,7 +4,7 @@ import { CreateSkillDto } from './dtos/create-skill.dto';
 import { Auth } from 'src/decorators/auth.decorator';
 import { User } from 'generated/prisma/client';
 
-@Resolver()
+@Resolver('Skill')
 export class SkillResolver {
   constructor(private skillService: SkillService) {}
 

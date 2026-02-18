@@ -15,7 +15,7 @@ import { EmployeeService } from 'src/employee/employee.service';
 import { CompanyService } from 'src/company/company.service';
 import { Auth } from 'src/decorators/auth.decorator';
 
-@Resolver()
+@Resolver('User')
 export class UserResolver {
   constructor(
     private userService: UserService,

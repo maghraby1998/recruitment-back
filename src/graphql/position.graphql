@@ -2,3 +2,7 @@ type Position {
   id: ID
   title: String
 }
+
+type Query {
+  positions(name: String): [Position]
+}

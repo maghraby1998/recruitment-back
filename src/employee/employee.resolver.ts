@@ -15,7 +15,7 @@ import { Employee, User } from 'generated/prisma/client';
 import { UserService } from 'src/user/user.service';
 import { ParseIntPipe } from '@nestjs/common';
 
-@Resolver()
+@Resolver('Employee')
 export class EmployeeResolver {
   constructor(
     private employeeService: EmployeeService,
@@ -63,5 +63,10 @@ export class EmployeeResolver {
   @ResolveField()
   async user(@Parent() employee: Employee) {
     return this.userService.getUserByEmployee(employee);
+  }
+
+  @ResolveField()
+  async position(@Parent() employee: Employee) {
+    return this.employeeService.getEmployeePosition(employee.id);
   }
 }
