@@ -16,4 +16,5 @@ input CreateSkillInput {
 type Query {
   skills(search: String): [Skill]
   getMySkills: [Skill]
+  generateSkills(position: String): [String]
 }
