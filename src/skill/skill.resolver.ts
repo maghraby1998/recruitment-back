@@ -5,16 +5,21 @@ import { Auth } from 'src/decorators/auth.decorator';
 import { User } from 'generated/prisma/client';
 import OpenAI from 'openai';
 import { Public } from 'src/decorators/public.decorator';
+import { ConfigService } from '@nestjs/config';
 
 @Resolver('Skill')
 export class SkillResolver {
-  constructor(private skillService: SkillService) {}
+  private openai: OpenAI;
 
-  private openai = new OpenAI({
-    apiKey:
-      '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',
-    baseURL: 'https://openrouter.ai/api/v1',
-  });
+  constructor(
+    private skillService: SkillService,
+    private configService: ConfigService,
+  ) {
+    this.openai = new OpenAI({
+      apiKey: this.configService.get<string>('openRouterApiKey'),
+      baseURL: 'https://openrouter.ai/api/v1',
+    });
+  }
 
   @Query()
   async getMySkills(@Auth() auth: User) {
