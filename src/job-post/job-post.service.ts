@@ -69,11 +69,22 @@ export class JobPostService {
       throw new NotFoundException('company not found');
     }
 
+    let positionId: number | undefined;
+    if (input.positionId) {
+      positionId = Number(input.positionId);
+    } else if (input.positionName) {
+      const position = await this.prismaService.position.create({
+        data: { title: input.positionName },
+      });
+      positionId = position.id;
+    }
+
     return this.prismaService.jobPost.create({
       data: {
         title: input.title,
         description: input.description,
         companyId: company.id,
+        positionId,
         skills: {
           connect: input.skillsIds?.map((skillId) => ({
             id: Number(skillId),
@@ -165,5 +176,31 @@ export class JobPostService {
     }
 
     return jobPost.skills;
+  }
+
+  async getJobPostPosition(jobPostId: number) {
+    const jobPost = await this.prismaService.jobPost.findFirst({
+      where: {
+        id: jobPostId,
+      },
+    });
+
+    if (!jobPost) {
+      throw new NotFoundException('job post not found');
+    } else if (!jobPost.positionId) {
+      return null;
+    }
+
+    const position = await this.prismaService.position.findUnique({
+      where: {
+        id: jobPost.positionId,
+      },
+    });
+
+    if (!position) {
+      throw new NotFoundException('position not found');
+    }
+
+    return position;
   }
 }

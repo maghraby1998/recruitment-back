@@ -71,4 +71,9 @@ export class JobPostResolver {
   async skills(@Parent() jobPost: JobPost) {
     return this.jobPostService.getJobPostSkills(jobPost.id);
   }
+
+  @ResolveField()
+  async position(@Parent() jobPost: JobPost) {
+    return this.jobPostService.getJobPostPosition(jobPost.id);
+  }
 }

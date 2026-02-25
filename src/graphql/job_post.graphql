@@ -23,6 +23,7 @@ type JobPost {
   created_at: DateTime
   canApply: Boolean
   skills: [Skill]
+  position: Position
 }
 
 type JobPostForm {
@@ -50,6 +51,8 @@ input CreateJobPostInput {
   skillsIds: [ID]
   skillsNames: [String]
   form: JobPostFormInput
+  positionId: ID
+  positionName: String
 }
 
 input JobPostFormInput {

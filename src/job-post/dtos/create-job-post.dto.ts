@@ -31,4 +31,12 @@ export class CreateJobPostDto {
   @IsArray()
   @IsOptional()
   skillsNames: string[];
+
+  @IsString()
+  @IsOptional()
+  positionId: string;
+
+  @IsString()
+  @IsOptional()
+  positionName: string;
 }

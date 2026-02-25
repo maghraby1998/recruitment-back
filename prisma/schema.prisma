@@ -73,6 +73,7 @@ model Position {
   id        Int        @id @default(autoincrement())
   title     String
   employees Employee[]
+  jobPosts  JobPost[]
 }
 
 model Copmany {
@@ -104,6 +105,8 @@ model JobPost {
   jobPostForm  JobPostForm?
   created_at   DateTime      @default(now()) @db.Timestamp(3)
   skills       Skill[]
+  positionId   Int?
+  position     Position?     @relation(fields: [positionId], references: [id])
 
   @@map("job_posts")
 }
