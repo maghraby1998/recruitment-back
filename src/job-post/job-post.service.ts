@@ -34,6 +34,9 @@ export class JobPostService {
             },
           },
           {
+            title: { contains: search },
+          },
+          {
             skills: {
               some: {
                 name: { contains: search },
