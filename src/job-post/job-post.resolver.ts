@@ -13,6 +13,7 @@ import { CompanyService } from 'src/company/company.service';
 import { CreateJobPostDto } from './dtos/create-job-post.dto';
 import { ParseIntPipe } from '@nestjs/common';
 import { PaginationDto } from 'src/common/pagination.dto';
+import { JobPostFilterDto } from './dtos/job-posts-filter.dto';
 
 @Resolver('JobPost')
 export class JobPostResolver {
@@ -22,8 +23,11 @@ export class JobPostResolver {
   ) {}
 
   @Query()
-  async jobPosts(@Args('pagination') pagination?: PaginationDto) {
-    return this.jobPostService.getJobPosts(pagination);
+  async jobPosts(
+    @Args('filter') filter: JobPostFilterDto,
+    @Args('pagination') pagination?: PaginationDto,
+  ) {
+    return this.jobPostService.getJobPosts(filter, pagination);
   }
 
   @Query()

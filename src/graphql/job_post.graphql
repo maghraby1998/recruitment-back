@@ -96,8 +96,16 @@ type PaginatedJobPosts {
   meta: PaginationMeta!
 }
 
+input JobPostsFilterInput {
+  search: String
+  status: JobPostStatus
+}
+
 type Query {
-  jobPosts(pagination: PaginationInput): PaginatedJobPosts
+  jobPosts(
+    filter: JobPostsFilterInput
+    pagination: PaginationInput
+  ): PaginatedJobPosts
   myJobPosts(pagination: PaginationInput): PaginatedJobPosts
   jobPost(id: ID!): JobPost
 }

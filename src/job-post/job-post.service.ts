@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateJobPostDto } from './dtos/create-job-post.dto';
-import { Question, Skill } from 'generated/prisma/client';
+import { Prisma } from 'generated/prisma/client';
 import { PaginationDto } from 'src/common/pagination.dto';
 import {
   getPrismaPageArgs,
   buildPaginatedResult,
 } from 'src/common/pagination.helper';
+import { JobPostFilterDto } from './dtos/job-posts-filter.dto';
 
 @Injectable()
 export class JobPostService {
@@ -18,16 +19,39 @@ export class JobPostService {
     });
   }
 
-  async getJobPosts(pagination?: PaginationDto) {
+  async getJobPosts(filter: JobPostFilterDto, pagination?: PaginationDto) {
     const { skip, take } = getPrismaPageArgs(pagination);
+
+    const search = filter?.search?.toLowerCase();
+
+    const where: Prisma.JobPostWhereInput = {
+      ...(filter?.status && { status: filter?.status }),
+      ...(search && {
+        OR: [
+          {
+            position: {
+              title: { contains: search },
+            },
+          },
+          {
+            skills: {
+              some: {
+                name: { contains: search },
+              },
+            },
+          },
+        ],
+      }),
+    };
 
     const [data, totalItems] = await Promise.all([
       this.prismaService.jobPost.findMany({
+        where,
         skip,
         take,
         orderBy: { created_at: 'desc' },
       }),
-      this.prismaService.jobPost.count(),
+      this.prismaService.jobPost.count({ where }),
     ]);
 
     return buildPaginatedResult(data, totalItems, pagination);
