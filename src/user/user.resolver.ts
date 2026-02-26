@@ -69,6 +69,11 @@ export class UserResolver {
     return true;
   }
 
+  @Mutation()
+  async changeImage(@Auth() user: User, @Args('image') image: any) {
+    return this.userService.changeImage(Number(user.id), image?.file);
+  }
+
   @ResolveField()
   async employee(@Parent() user: User) {
     return this.employeeService.getEmployeeByUserId(+user.id);

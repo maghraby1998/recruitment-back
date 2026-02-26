@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { FileUpload } from 'graphql-upload/processRequest.mjs';
 import { createWriteStream, existsSync, mkdirSync } from 'fs';
+import { storeImage } from 'src/helpers/helpers';
 
 @Injectable()
 export class CompanyService {
@@ -60,27 +61,12 @@ export class CompanyService {
       });
 
       if (image) {
-        const uploadsDir = './uploads';
-
-        // Create uploads directory if it doesn't exist
-        if (!existsSync(uploadsDir)) {
-          mkdirSync(uploadsDir, { recursive: true });
-        }
-
-        const imageName = `${company.id}-${new Date().toDateString()}-${image?.filename}`;
-
-        if (!['image/jpeg', 'image/png'].includes(image.mimetype)) {
-          throw new BadRequestException('Only JPG and PNG images are allowed');
-        }
-
-        image
-          ?.createReadStream()
-          .pipe(createWriteStream('./uploads/' + imageName));
+        const imgPath = await storeImage(image, company.id);
 
         await prisma.copmany.update({
           where: { id: company.id },
           data: {
-            imgPath: `/uploads/${imageName}`,
+            imgPath,
           },
         });
       }

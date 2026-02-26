@@ -24,6 +24,7 @@ input SignInInput {
 type Mutation {
   signIn(input: SignInInput!): User!
   logOut: Boolean!
+  changeImage(image: Upload!): User!
 }
 
 scalar Upload

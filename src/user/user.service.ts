@@ -3,6 +3,8 @@ import { PrismaService } from 'src/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Copmany, Employee } from 'generated/prisma/client';
+import { FileUpload } from 'graphql-upload/processRequest.mjs';
+import { storeImage } from 'src/helpers/helpers';
 
 @Injectable()
 export class UserService {
@@ -50,5 +52,34 @@ export class UserService {
         id: employee.userId,
       },
     });
+  }
+
+  async changeImage(userId: number, image: FileUpload) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+    });
+    const imgPath = await storeImage(image, userId);
+
+    if (user && user.user_type == 'EMPLOYEE') {
+      await this.prismaService.employee.update({
+        where: {
+          userId,
+        },
+        data: {
+          imgPath,
+        },
+      });
+    } else {
+      await this.prismaService.copmany.update({
+        where: {
+          userId,
+        },
+        data: {
+          imgPath,
+        },
+      });
+    }
+
+    return user;
   }
 }
