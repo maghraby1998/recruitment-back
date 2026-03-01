@@ -35,10 +35,13 @@ type React {
   type: PostType
 }
 
+type Query {
+  posts(pagination: PaginationInput): [Post]
+}
+
 type Mutation {
   createPost(input: CreatePostInput): Post
-  posts(pagination: PaginationInput): [Posts]
-  createReaction(postId: ID, reactType: ReactType): React
+  createReact(postId: ID, reactType: ReactType): React
   createComment(postId: ID, content: String): Comment
 }
 
