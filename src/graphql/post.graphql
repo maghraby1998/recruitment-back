@@ -22,12 +22,19 @@ type Post {
   user: User
   type: PostType
   created_at: DateTime
+  reactions: [PostReactionsResponse]
+}
+
+type PostReactionsResponse {
+  count: Int
+  type: ReactType
 }
 
 type Comment {
   id: ID
   content: String
   post: Post
+  user: User
 }
 
 type React {
@@ -35,17 +42,32 @@ type React {
   type: PostType
 }
 
+type PaginatedPosts {
+  data: [Post]
+  meta: PaginationMeta
+}
+
 type Query {
-  posts(pagination: PaginationInput): [Post]
+  posts(pagination: PaginationInput): PaginatedPosts
 }
 
 type Mutation {
   createPost(input: CreatePostInput): Post
-  createReact(postId: ID, reactType: ReactType): React
-  createComment(postId: ID, content: String): Comment
+  createReact(input: CreateReactionInput): React
+  createComment(input: CreateCommentInput): Comment
 }
 
 input CreatePostInput {
   content: String
   type: PostType
+}
+
+input CreateReactionInput {
+  postId: ID
+  reactType: ReactType
+}
+
+input CreateCommentInput {
+  postId: ID
+  content: String
 }

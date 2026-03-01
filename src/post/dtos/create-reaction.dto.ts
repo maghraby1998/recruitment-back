@@ -3,7 +3,7 @@ import { ReactType } from 'generated/prisma/enums';
 
 export class CreateReactionDto {
   @IsString()
-  type: ReactType;
+  reactType: ReactType;
 
   @IsString()
   postId: string;

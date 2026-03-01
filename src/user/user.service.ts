@@ -82,4 +82,8 @@ export class UserService {
 
     return user;
   }
+
+  async getUserById(id: number) {
+    return this.prismaService.user.findUnique({ where: { id } });
+  }
 }
