@@ -44,6 +44,9 @@ model User {
   user_type UserType
   employee  Employee?
   company   Copmany?
+  posts     Post[]
+  comments  Comment[]
+  reacts    React[]
 
   @@map("users")
 }
@@ -198,4 +201,52 @@ model Skill {
   name      String
   employees Employee[]
   jobPosts  JobPost[]
+}
+
+enum PostType {
+  CELEBRATION
+  ANNOUNCEMENT
+  OPINION
+  QUESTION
+  OTHER
+}
+
+model Post {
+  id         Int       @id @default(autoincrement())
+  content    String
+  type       PostType  @default(OTHER)
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
+  comments   Comment[]
+  created_at DateTime  @default(now()) @db.Timestamp(3)
+  reacts     React[]
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  content    String
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  postId     Int
+  post       Post     @relation(fields: [postId], references: [id])
+  created_at DateTime @default(now()) @db.Timestamp(3)
+}
+
+enum ReactType {
+  LIKE
+  DISLIKE
+  LOVE
+  HAHA
+  WOW
+  CELEBRATE
+}
+
+model React {
+  id         Int       @id @default(autoincrement())
+  react_type ReactType
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
+  postId     Int
+  post       Post      @relation(fields: [postId], references: [id])
+  created_at DateTime  @default(now()) @db.Timestamp(3)
 }

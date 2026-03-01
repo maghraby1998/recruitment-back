@@ -1,0 +1,48 @@
+enum PostType {
+  CELEBRATION
+  ANNOUNCEMENT
+  OPINION
+  QUESTION
+  OTHER
+}
+
+enum ReactType {
+  LIKE
+  DISLIKE
+  LOVE
+  HAHA
+  WOW
+  CELEBRATE
+}
+
+type Post {
+  id: ID
+  content: String
+  comments: [Comment]
+  user: User
+  type: PostType
+  created_at: DateTime
+}
+
+type Comment {
+  id: ID
+  content: String
+  post: Post
+}
+
+type React {
+  id: ID
+  type: PostType
+}
+
+type Mutation {
+  createPost(input: CreatePostInput): Post
+  posts(pagination: PaginationInput): [Posts]
+  createReaction(postId: ID, reactType: ReactType): React
+  createComment(postId: ID, content: String): Comment
+}
+
+input CreatePostInput {
+  content: String
+  type: PostType
+}

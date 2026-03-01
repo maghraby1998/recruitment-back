@@ -18,6 +18,7 @@ import { DateTimeScalar } from './date-time.scalar';
 import { PositionModule } from './position/position.module';
 import { SkillModule } from './skill/skill.module';
 import { ConfigModule } from '@nestjs/config';
+import { PostModule } from './post/post.module';
 import configurations from 'config/configurations';
 
 @Module({
@@ -50,6 +51,7 @@ import configurations from 'config/configurations';
     }),
     PositionModule,
     SkillModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [
