@@ -56,6 +56,9 @@ export class PostService {
     const posts = await this.prismaService.post.findMany({
       skip,
       take,
+      orderBy: {
+        created_at: 'desc',
+      },
     });
 
     const totalPosts = await this.prismaService.post.count();
