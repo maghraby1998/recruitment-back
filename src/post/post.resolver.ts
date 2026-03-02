@@ -80,5 +80,10 @@ export class PostResolver {
   }
 
   @Mutation()
-  async deleteReaction(@Args('postId', ParseIntPipe) postId: number) {}
+  async deleteReaction(
+    @Args('postId', ParseIntPipe) postId: number,
+    @Auth() user: User,
+  ) {
+    return this.postService.deleteReaction(user.id, postId);
+  }
 }

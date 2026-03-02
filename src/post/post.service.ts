@@ -19,6 +19,7 @@ export class PostService {
       data: {
         content: input.content,
         userId,
+        type: input.type,
       },
     });
   }
@@ -124,7 +125,7 @@ export class PostService {
     });
 
     if (reaction) {
-      return this.prismaService.react.deleteMany({
+      return this.prismaService.react.delete({
         where: {
           id: reaction.id,
         },
