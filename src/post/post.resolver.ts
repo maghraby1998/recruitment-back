@@ -14,6 +14,7 @@ import { Auth } from 'src/decorators/auth.decorator';
 import { Comment, Post, User } from 'generated/prisma/client';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { UserService } from 'src/user/user.service';
+import { ParseIntPipe } from '@nestjs/common';
 
 @Resolver('Comment')
 export class CommentResolver {
@@ -72,4 +73,12 @@ export class PostResolver {
   async reactions(@Parent() post: Post) {
     return this.postService.getPostReactions(post.id);
   }
+
+  @ResolveField()
+  async authReaction(@Auth() user: User, @Parent() post: Post) {
+    return this.postService.getAuthReactionOnPost(user.id, post.id);
+  }
+
+  @Mutation()
+  async deleteReaction(@Args('postId', ParseIntPipe) postId: number) {}
 }

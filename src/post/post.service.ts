@@ -24,6 +24,13 @@ export class PostService {
   }
 
   async createReact(userId: number, input: CreateReactionDto) {
+    await this.prismaService.react.deleteMany({
+      where: {
+        postId: Number(input.postId),
+        userId,
+      },
+    });
+
     return this.prismaService.react.create({
       data: {
         postId: Number(input.postId),
@@ -85,5 +92,45 @@ export class PostService {
         type,
       };
     });
+  }
+
+  async getAuthReactionOnPost(userId: number, postId: number) {
+    const reaction = await this.prismaService.react.findFirst({
+      where: {
+        postId,
+        userId,
+      },
+      select: {
+        react_type: true,
+      },
+    });
+
+    if (reaction) {
+      return reaction.react_type;
+    } else {
+      return null;
+    }
+  }
+
+  async deleteReaction(userId: number, postId: number) {
+    const reaction = await this.prismaService.react.findFirst({
+      where: {
+        postId,
+        userId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (reaction) {
+      return this.prismaService.react.deleteMany({
+        where: {
+          id: reaction.id,
+        },
+      });
+    } else {
+      return null;
+    }
   }
 }
