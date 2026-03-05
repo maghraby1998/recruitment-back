@@ -20,6 +20,8 @@ import { SkillModule } from './skill/skill.module';
 import { ConfigModule } from '@nestjs/config';
 import { PostModule } from './post/post.module';
 import configurations from 'config/configurations';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { GqlThrottlerGuard } from './guards/throttler.guard';
 
 @Module({
   imports: [
@@ -52,6 +54,14 @@ import configurations from 'config/configurations';
     PositionModule,
     SkillModule,
     PostModule,
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 60,
+        },
+      ],
+    }),
   ],
   controllers: [AppController],
   providers: [
@@ -61,6 +71,10 @@ import configurations from 'config/configurations';
     {
       provide: 'APP_GUARD',
       useClass: AuthGuard,
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: GqlThrottlerGuard,
     },
   ],
 })
