@@ -15,6 +15,7 @@ import { Comment, Post, User } from 'generated/prisma/client';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { UserService } from 'src/user/user.service';
 import { ParseIntPipe } from '@nestjs/common';
+import { FileUpload } from 'graphql-upload/processRequest.mjs';
 
 @Resolver('Comment')
 export class CommentResolver {
@@ -34,8 +35,12 @@ export class PostResolver {
   ) {}
 
   @Mutation()
-  async createPost(@Args('input') input: CreatePostDto, @Auth() user: User) {
-    return this.postService.createPost(user.id, input);
+  async createPost(
+    @Args('input') input: CreatePostDto,
+    @Args('images') images: { file: FileUpload }[],
+    @Auth() user: User,
+  ) {
+    return this.postService.createPost(user.id, input, images);
   }
 
   @Mutation()
@@ -85,5 +90,10 @@ export class PostResolver {
     @Auth() user: User,
   ) {
     return this.postService.deleteReaction(user.id, postId);
+  }
+
+  @ResolveField()
+  async imagesPaths(@Parent() post: Post) {
+    return this.postService.getPostImages(post.id);
   }
 }

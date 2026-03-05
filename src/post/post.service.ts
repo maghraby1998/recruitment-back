@@ -9,19 +9,44 @@ import {
   getPrismaPageArgs,
 } from 'src/common/pagination.helper';
 import { Post, ReactType } from 'generated/prisma/client';
+import { FileUpload } from 'graphql-upload/processRequest.mjs';
+import { storeImage } from 'src/helpers/helpers';
 
 @Injectable()
 export class PostService {
   constructor(private prismaService: PrismaService) {}
 
-  async createPost(userId: number, input: CreatePostDto) {
-    return this.prismaService.post.create({
+  async createPost(
+    userId: number,
+    input: CreatePostDto,
+    images: { file: FileUpload }[],
+  ) {
+    console.log('images service', images);
+
+    const post = await this.prismaService.post.create({
       data: {
         content: input.content,
         userId,
         type: input.type,
       },
     });
+
+    let imagesToSave: any = [];
+
+    images.forEach(async (image) => {
+      const path = await storeImage(image?.file, post.id);
+
+      imagesToSave.push({
+        postId: post.id,
+        path,
+      });
+    });
+
+    await this.prismaService.postImage.createMany({
+      data: imagesToSave,
+    });
+
+    return post;
   }
 
   async createReact(userId: number, input: CreateReactionDto) {
@@ -136,5 +161,18 @@ export class PostService {
     } else {
       return null;
     }
+  }
+
+  async getPostImages(postId: number) {
+    const paths = await this.prismaService.postImage.findMany({
+      where: {
+        postId,
+      },
+      select: {
+        path: true,
+      },
+    });
+
+    return paths.map((path) => path.path);
   }
 }

@@ -24,6 +24,7 @@ type Post {
   created_at: DateTime
   reactions: [PostReactionsResponse]
   authReaction: ReactType
+  imagesPaths: [String]
 }
 
 type PostReactionsResponse {
@@ -53,7 +54,7 @@ type Query {
 }
 
 type Mutation {
-  createPost(input: CreatePostInput): Post
+  createPost(input: CreatePostInput, images: [Upload]): Post
   createReact(input: CreateReactionInput): React
   createComment(input: CreateCommentInput): Comment
   deleteReaction(postId: ID): React

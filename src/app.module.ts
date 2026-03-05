@@ -81,7 +81,7 @@ import { GqlThrottlerGuard } from './guards/throttler.guard';
 export class AppModule {
   configure(consumer) {
     consumer
-      .apply(graphqlUploadExpress({ maxFileSize: 15000000, maxFiles: 1 }))
+      .apply(graphqlUploadExpress({ maxFileSize: 15000000, maxFiles: 20 }))
       .forRoutes('*');
   }
 }

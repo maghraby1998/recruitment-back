@@ -212,14 +212,15 @@ enum PostType {
 }
 
 model Post {
-  id         Int       @id @default(autoincrement())
+  id         Int         @id @default(autoincrement())
   content    String
-  type       PostType  @default(OTHER)
+  type       PostType    @default(OTHER)
   userId     Int
-  user       User      @relation(fields: [userId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
   comments   Comment[]
-  created_at DateTime  @default(now()) @db.Timestamp(3)
+  created_at DateTime    @default(now()) @db.Timestamp(3)
   reacts     React[]
+  postImages PostImage[]
 }
 
 model Comment {
@@ -249,4 +250,11 @@ model React {
   postId     Int
   post       Post      @relation(fields: [postId], references: [id])
   created_at DateTime  @default(now()) @db.Timestamp(3)
+}
+
+model PostImage {
+  id     Int    @id @default(autoincrement())
+  path   String
+  postId Int
+  post   Post   @relation(fields: [postId], references: [id])
 }
