@@ -16,14 +16,28 @@ import { PaginationDto } from 'src/common/pagination.dto';
 import { UserService } from 'src/user/user.service';
 import { ParseIntPipe } from '@nestjs/common';
 import { FileUpload } from 'graphql-upload/processRequest.mjs';
+import { CreateCommentReactionDto } from './dtos/create-comment-reaction.dto';
 
 @Resolver('Comment')
 export class CommentResolver {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private postService: PostService,
+  ) {}
 
   @ResolveField()
   async user(@Parent() comment: Comment) {
     return this.userService.getUserById(comment.userId);
+  }
+
+  @ResolveField()
+  async authReaction(@Auth() user: User, @Parent() comment: Comment) {
+    return this.postService.getAuthReactionOnComment(user.id, comment.id);
+  }
+
+  @ResolveField()
+  async reactions(@Parent() comment: Comment) {
+    return this.postService.getCommentReactions(comment.id);
   }
 }
 
@@ -49,6 +63,14 @@ export class PostResolver {
     @Auth() user: User,
   ) {
     return this.postService.createReact(user.id, input);
+  }
+
+  @Mutation()
+  async createCommentReaction(
+    @Args('input') input: CreateCommentReactionDto,
+    @Auth() user: User,
+  ) {
+    return this.postService.createCommentReaction(user.id, input);
   }
 
   @Mutation()
@@ -90,6 +112,14 @@ export class PostResolver {
     @Auth() user: User,
   ) {
     return this.postService.deleteReaction(user.id, postId);
+  }
+
+  @Mutation()
+  async deleteCommentReaction(
+    @Args('commentId', ParseIntPipe) commentId: number,
+    @Auth() user: User,
+  ) {
+    return this.postService.deleteCommentReaction(user.id, commentId);
   }
 
   @ResolveField()

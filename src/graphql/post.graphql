@@ -37,11 +37,14 @@ type Comment {
   content: String
   post: Post
   user: User
+  parentId: ID
+  reactions: [PostReactionsResponse]
+  authReaction: ReactType
 }
 
 type React {
   id: ID
-  type: PostType
+  type: ReactType
 }
 
 type PaginatedPosts {
@@ -58,6 +61,8 @@ type Mutation {
   createReact(input: CreateReactionInput): React
   createComment(input: CreateCommentInput): Comment
   deleteReaction(postId: ID): React
+  createCommentReaction(input: CreateCommentReactionInput): React
+  deleteCommentReaction(commentId: ID): React
 }
 
 input CreatePostInput {
@@ -70,7 +75,13 @@ input CreateReactionInput {
   reactType: ReactType
 }
 
+input CreateCommentReactionInput {
+  commentId: ID
+  reactType: ReactType
+}
+
 input CreateCommentInput {
   postId: ID
   content: String
+  parentId: ID
 }

@@ -11,6 +11,7 @@ import {
 import { Post, ReactType } from 'generated/prisma/client';
 import { FileUpload } from 'graphql-upload/processRequest.mjs';
 import { storeImage } from 'src/helpers/helpers';
+import { CreateCommentReactionDto } from './dtos/create-comment-reaction.dto';
 
 @Injectable()
 export class PostService {
@@ -66,12 +67,30 @@ export class PostService {
     });
   }
 
+  async createCommentReaction(userId: number, input: CreateCommentReactionDto) {
+    await this.prismaService.commentReact.deleteMany({
+      where: {
+        commentId: Number(input.commentId),
+        userId,
+      },
+    });
+
+    return this.prismaService.commentReact.create({
+      data: {
+        commentId: Number(input.commentId),
+        userId,
+        react_type: input.reactType,
+      },
+    });
+  }
+
   async createComment(userId: number, input: CreateCommentDto) {
     return this.prismaService.comment.create({
       data: {
         userId,
         postId: Number(input.postId),
         content: input.content,
+        parentId: Number(input.parentId),
       },
     });
   }
@@ -123,6 +142,27 @@ export class PostService {
     });
   }
 
+  async getCommentReactions(commentId: number) {
+    return [
+      ReactType.LIKE,
+      ReactType.DISLIKE,
+      ReactType.HAHA,
+      ReactType.LOVE,
+      ReactType.WOW,
+      ReactType.CELEBRATE,
+    ].map(async (type) => {
+      return {
+        count: await this.prismaService.commentReact.count({
+          where: {
+            react_type: type,
+            commentId,
+          },
+        }),
+        type,
+      };
+    });
+  }
+
   async getAuthReactionOnPost(userId: number, postId: number) {
     const reaction = await this.prismaService.react.findFirst({
       where: {
@@ -141,10 +181,50 @@ export class PostService {
     }
   }
 
+  async getAuthReactionOnComment(userId: number, commentId: number) {
+    const reaction = await this.prismaService.commentReact.findFirst({
+      where: {
+        commentId,
+        userId,
+      },
+      select: {
+        react_type: true,
+      },
+    });
+
+    if (reaction) {
+      return reaction.react_type;
+    } else {
+      return null;
+    }
+  }
+
   async deleteReaction(userId: number, postId: number) {
     const reaction = await this.prismaService.react.findFirst({
       where: {
         postId,
+        userId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (reaction) {
+      return this.prismaService.react.delete({
+        where: {
+          id: reaction.id,
+        },
+      });
+    } else {
+      return null;
+    }
+  }
+
+  async deleteCommentReaction(userId: number, commentId: number) {
+    const reaction = await this.prismaService.commentReact.findFirst({
+      where: {
+        commentId,
         userId,
       },
       select: {
