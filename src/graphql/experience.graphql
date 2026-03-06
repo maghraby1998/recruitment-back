@@ -1,0 +1,25 @@
+type Experience {
+  id: ID
+  employee: Employee
+  position: Position
+  description: String
+  companyName: String
+  company: Company
+  from: DateTime
+  to: DateTime
+}
+
+input UpsertExperienceInput {
+  positionName: String
+  positionId: ID
+  companyName: String
+  companyId: ID
+  description: String
+  from: DateTime
+  to: DateTime
+}
+
+type Mutation {
+  createExperience(input: UpsertExperienceInput): Experience
+  deleteExperience(id: ID): Experience
+}

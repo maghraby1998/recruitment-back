@@ -64,4 +64,9 @@ export class CompanyResolver {
   async user(@Parent() company: Copmany) {
     return this.userService.getUserByCompany(company);
   }
+
+  @Query()
+  async companies(@Args('name') name: string) {
+    return this.companyService.getCompanies(name);
+  }
 }

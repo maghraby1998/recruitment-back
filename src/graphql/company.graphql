@@ -21,4 +21,5 @@ type Mutation {
 
 type Query {
   company(id: ID!): Company!
+  companies(name: String): [Company]
 }

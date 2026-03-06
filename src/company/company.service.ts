@@ -85,4 +85,20 @@ export class CompanyService {
       },
     });
   }
+
+  async getCompanies(name: string) {
+    return this.prismaService.copmany.findMany({
+      where: name
+        ? {
+            name: {
+              contains: name,
+            },
+          }
+        : undefined,
+    });
+  }
+
+  async getCompany(id: number) {
+    return this.prismaService.copmany.findUnique({ where: { id } });
+  }
 }

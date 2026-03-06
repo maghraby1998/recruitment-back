@@ -119,4 +119,24 @@ export class EmployeeService {
 
     return employee?.position;
   }
+
+  async getEmployeeSkills(employeeId: number) {
+    return this.prismaService.skill.findMany({
+      where: {
+        employees: {
+          some: {
+            id: employeeId,
+          },
+        },
+      },
+    });
+  }
+
+  async getEmployeeExperiences(employeeId: number) {
+    console.log('lsdjsfkj');
+
+    return this.prismaService.experience.findMany({
+      where: { employeeId },
+    });
+  }
 }

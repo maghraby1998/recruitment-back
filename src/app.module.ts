@@ -22,6 +22,7 @@ import { PostModule } from './post/post.module';
 import configurations from 'config/configurations';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { GqlThrottlerGuard } from './guards/throttler.guard';
+import { ExperienceModule } from './experience/experience.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { GqlThrottlerGuard } from './guards/throttler.guard';
         },
       ],
     }),
+    ExperienceModule,
   ],
   controllers: [AppController],
   providers: [

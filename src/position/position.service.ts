@@ -8,4 +8,8 @@ export class PositionService {
   async getPositions(name: string) {
     return this.prismaService.position.findMany();
   }
+
+  async getPositionById(id: number) {
+    return this.prismaService.position.findUnique({ where: { id } });
+  }
 }

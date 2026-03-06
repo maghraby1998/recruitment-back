@@ -69,4 +69,14 @@ export class EmployeeResolver {
   async position(@Parent() employee: Employee) {
     return this.employeeService.getEmployeePosition(employee.id);
   }
+
+  @ResolveField()
+  async skills(@Parent() employee: Employee) {
+    return this.employeeService.getEmployeeSkills(employee.id);
+  }
+
+  @ResolveField()
+  async experiences(@Parent() employee: Employee) {
+    return this.employeeService.getEmployeeExperiences(employee.id);
+  }
 }

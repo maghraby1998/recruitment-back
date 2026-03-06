@@ -69,31 +69,34 @@ model Employee {
   cityId       Int?
   city         City?         @relation(fields: [cityId], references: [id])
   skills       Skill[]
+  experiences  Experience[]
 
   @@map("user_profiles")
 }
 
 model Position {
-  id        Int        @id @default(autoincrement())
-  title     String
-  employees Employee[]
-  jobPosts  JobPost[]
+  id          Int          @id @default(autoincrement())
+  title       String
+  employees   Employee[]
+  jobPosts    JobPost[]
+  experiences Experience[]
 }
 
 model Copmany {
-  id          Int       @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   name        String
   website     String?
-  userId      Int       @unique
-  user        User      @relation(fields: [userId], references: [id])
+  userId      Int          @unique
+  user        User         @relation(fields: [userId], references: [id])
   description String?
   location    String?
   jobPosts    JobPost[]
   imgPath     String?
   countryId   Int?
-  country     Country?  @relation(fields: [countryId], references: [id])
+  country     Country?     @relation(fields: [countryId], references: [id])
   cityId      Int?
-  city        City?     @relation(fields: [cityId], references: [id])
+  city        City?        @relation(fields: [cityId], references: [id])
+  experiences Experience[]
 
   @@map("company_profiles")
 }
@@ -272,4 +275,18 @@ model PostImage {
   path   String
   postId Int
   post   Post   @relation(fields: [postId], references: [id])
+}
+
+model Experience {
+  id          Int       @id @default(autoincrement())
+  employeeId  Int
+  employee    Employee  @relation(fields: [employeeId], references: [id])
+  positionId  Int
+  position    Position  @relation(fields: [positionId], references: [id])
+  companyName String?
+  description String?
+  companyId   Int
+  company     Copmany   @relation(fields: [companyId], references: [id])
+  from        DateTime
+  to          DateTime?
 }
