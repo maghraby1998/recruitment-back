@@ -14,6 +14,7 @@ import { User } from 'generated/prisma/client';
 import { EmployeeService } from 'src/employee/employee.service';
 import { CompanyService } from 'src/company/company.service';
 import { Auth } from 'src/decorators/auth.decorator';
+import { ParseIntPipe } from '@nestjs/common';
 
 @Resolver('User')
 export class UserResolver {
@@ -87,5 +88,10 @@ export class UserResolver {
   @Query()
   async getAuthUser(@Auth() user: User) {
     return this.userService.getAuthUser(Number(user.id));
+  }
+
+  @Query()
+  async getUser(@Args('userId', ParseIntPipe) userId: number) {
+    return this.userService.getUserById(userId);
   }
 }
