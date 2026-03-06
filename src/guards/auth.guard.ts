@@ -70,7 +70,7 @@ export class AuthGuard implements CanActivate {
     }
 
     // Fallback to Authorization header
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    const [type, token] = request.headers?.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
 }

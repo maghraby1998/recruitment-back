@@ -133,8 +133,6 @@ export class EmployeeService {
   }
 
   async getEmployeeExperiences(employeeId: number) {
-    console.log('lsdjsfkj');
-
     return this.prismaService.experience.findMany({
       where: { employeeId },
     });

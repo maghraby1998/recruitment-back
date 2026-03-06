@@ -9,4 +9,14 @@ export class GqlThrottlerGuard extends ThrottlerGuard {
     const ctx = gqlCtx.getContext();
     return { req: ctx.req, res: ctx.res };
   }
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const gqlCtx = GqlExecutionContext.create(context);
+    const ctx = gqlCtx.getContext();
+    // Skip throttling for WebSocket subscriptions (no res object)
+    if (!ctx.res) {
+      return true;
+    }
+    return super.canActivate(context);
+  }
 }

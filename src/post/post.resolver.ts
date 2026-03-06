@@ -5,6 +5,7 @@ import {
   Query,
   ResolveField,
   Resolver,
+  Subscription,
 } from '@nestjs/graphql';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dtos/create-post.dto';
@@ -17,6 +18,7 @@ import { UserService } from 'src/user/user.service';
 import { ParseIntPipe } from '@nestjs/common';
 import { FileUpload } from 'graphql-upload/processRequest.mjs';
 import { CreateCommentReactionDto } from './dtos/create-comment-reaction.dto';
+import { PubSub } from 'graphql-subscriptions';
 
 @Resolver('Comment')
 export class CommentResolver {
@@ -46,6 +48,7 @@ export class PostResolver {
   constructor(
     private postService: PostService,
     private userService: UserService,
+    private pubSub: PubSub,
   ) {}
 
   @Mutation()
@@ -54,7 +57,12 @@ export class PostResolver {
     @Args('images') images: { file: FileUpload }[],
     @Auth() user: User,
   ) {
-    return this.postService.createPost(user.id, input, images);
+    const post = await this.postService.createPost(user.id, input, images);
+
+    this.pubSub.publish('postAdded', {
+      postAdded: post,
+    });
+    return post;
   }
 
   @Mutation()
@@ -125,5 +133,10 @@ export class PostResolver {
   @ResolveField()
   async imagesPaths(@Parent() post: Post) {
     return this.postService.getPostImages(post.id);
+  }
+
+  @Subscription()
+  async postAdded() {
+    return this.pubSub.asyncIterableIterator('postAdded');
   }
 }

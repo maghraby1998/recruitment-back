@@ -22,8 +22,6 @@ export class PostService {
     input: CreatePostDto,
     images: { file: FileUpload }[],
   ) {
-    console.log('images service', images);
-
     const post = await this.prismaService.post.create({
       data: {
         content: input.content,

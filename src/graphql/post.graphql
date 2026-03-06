@@ -85,3 +85,7 @@ input CreateCommentInput {
   content: String
   parentId: ID
 }
+
+type Subscription {
+  postAdded: Post
+}

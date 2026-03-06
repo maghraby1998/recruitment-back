@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { PubSub } from 'graphql-subscriptions';
 import { UserModule } from './user/user.module';
 import { PrismaService } from './prisma.service';
 import { JwtModule } from '@nestjs/jwt';
@@ -30,11 +31,49 @@ import { ExperienceModule } from './experience/experience.module';
       isGlobal: true,
       load: [configurations],
     }),
+
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ['./**/*.graphql'],
       graphiql: true,
-      context: ({ req, res }) => ({ req, res }),
+      context: ({ req, res, extra }) => {
+        // For WebSocket subscriptions, use the upgrade request from extra
+        if (extra?.request) {
+          return { req: extra.request };
+        }
+        return { req, res };
+      },
+      subscriptions: {
+        'graphql-ws': {
+          onConnect: (ctx: any) => {
+            const request = ctx.extra.request;
+            const cookies = request.headers?.cookie || '';
+            const authInfoMatch = cookies
+              .split(';')
+              .map((c) => c.trim())
+              .find((c) => c.startsWith('auth_info='));
+
+            if (!authInfoMatch) {
+              throw new Error('Missing auth cookie');
+            }
+
+            const authInfoValue = decodeURIComponent(
+              authInfoMatch.split('=').slice(1).join('='),
+            );
+            const accessToken = JSON.parse(authInfoValue)?.accessToken;
+
+            if (!accessToken) {
+              throw new Error('Token is not valid');
+            }
+
+            // Store token on the request-like object so the AuthGuard can access it
+            (ctx.extra.request as any).headers = {
+              ...ctx.extra.request.headers,
+              authorization: `Bearer ${accessToken}`,
+            };
+          },
+        },
+      },
     }),
     UserModule,
     JwtModule.register({
@@ -77,6 +116,10 @@ import { ExperienceModule } from './experience/experience.module';
     {
       provide: 'APP_GUARD',
       useClass: GqlThrottlerGuard,
+    },
+    {
+      provide: 'PUB_SUB',
+      useValue: new PubSub(),
     },
   ],
 })
