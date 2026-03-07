@@ -49,6 +49,7 @@ model User {
   reacts        React[]
   commentReacts CommentReact[]
   fcm_token     String?
+  notifications Notification[]
 
   @@map("users")
 }
@@ -290,4 +291,13 @@ model Experience {
   company     Copmany   @relation(fields: [companyId], references: [id])
   from        DateTime
   to          DateTime?
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  receiverId Int
+  receiver   User     @relation(fields: [receiverId], references: [id])
+  title      String
+  body       String
+  created_at DateTime @default(now()) @db.Timestamp(3)
 }

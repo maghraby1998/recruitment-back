@@ -25,6 +25,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { GqlThrottlerGuard } from './guards/throttler.guard';
 import { ExperienceModule } from './experience/experience.module';
 import { NotificationModule } from './notification/notification.module';
+import jwt from 'jsonwebtoken';
 
 @Module({
   imports: [
@@ -66,6 +67,11 @@ import { NotificationModule } from './notification/notification.module';
             if (!accessToken) {
               throw new Error('Token is not valid');
             }
+
+            const decoded = jwt.verify(
+              accessToken,
+              'randomsecretfornowthatshouldbereplacedlater',
+            ) as { id: string };
 
             // Store token on the request-like object so the AuthGuard can access it
             (ctx.extra.request as any).headers = {

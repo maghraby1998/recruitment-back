@@ -106,7 +106,7 @@ export class PostService {
     if (post?.userId != userId) {
       const postOwner = await this.prismaService.user.findUnique({
         where: { id: post?.userId },
-        select: { fcm_token: true },
+        select: { fcm_token: true, id: true },
       });
 
       if (!!postOwner?.fcm_token) {
@@ -146,6 +146,7 @@ export class PostService {
         }
 
         this.notificationService.sendPushNotification(
+          postOwner.id,
           postOwner?.fcm_token,
           userName,
           comment.content,
