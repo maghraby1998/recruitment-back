@@ -4,8 +4,10 @@ import { CommentResolver, PostResolver } from './post.resolver';
 import { PrismaService } from 'src/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { PubSub } from 'graphql-subscriptions';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
+  imports: [NotificationModule],
   providers: [
     PostService,
     PostResolver,

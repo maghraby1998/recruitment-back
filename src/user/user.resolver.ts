@@ -27,12 +27,13 @@ export class UserResolver {
   @Public()
   @Mutation()
   async signIn(
-    @Args('input') input: { email: string; password: string },
+    @Args('input') input: { email: string; password: string; fcmToken: string },
     @Context() context: { res: Response },
   ) {
     const { user, accessToken } = await this.userService.signIn(
       input.email,
       input.password,
+      input.fcmToken,
     );
 
     this.storeAccessTokenInCookie(context, accessToken, user);

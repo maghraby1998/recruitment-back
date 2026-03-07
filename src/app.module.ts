@@ -24,6 +24,7 @@ import configurations from 'config/configurations';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { GqlThrottlerGuard } from './guards/throttler.guard';
 import { ExperienceModule } from './experience/experience.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -103,6 +104,7 @@ import { ExperienceModule } from './experience/experience.module';
       ],
     }),
     ExperienceModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [

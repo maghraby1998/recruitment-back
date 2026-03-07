@@ -21,7 +21,7 @@ export class UserService {
     });
   }
 
-  async signIn(email: string, pass: string) {
+  async signIn(email: string, pass: string, fcmToken: string) {
     const user = await this.prismaService.user.findFirst({
       where: { email },
     });
@@ -34,6 +34,15 @@ export class UserService {
     }
     const payload = { id: user.id, email: user.email };
     const accessToken = await this.jwtService.signAsync(payload);
+
+    await this.prismaService.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        fcm_token: fcmToken,
+      },
+    });
 
     return { user, accessToken };
   }

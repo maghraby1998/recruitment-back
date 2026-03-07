@@ -20,6 +20,7 @@ type Query {
 input SignInInput {
   email: String!
   password: String!
+  fcmToken: String
 }
 
 type Mutation {

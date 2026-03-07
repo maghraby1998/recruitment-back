@@ -12,10 +12,14 @@ import { Post, ReactType } from 'generated/prisma/client';
 import { FileUpload } from 'graphql-upload/processRequest.mjs';
 import { storeImage } from 'src/helpers/helpers';
 import { CreateCommentReactionDto } from './dtos/create-comment-reaction.dto';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class PostService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private notificationService: NotificationService,
+  ) {}
 
   async createPost(
     userId: number,
@@ -83,7 +87,7 @@ export class PostService {
   }
 
   async createComment(userId: number, input: CreateCommentDto) {
-    return this.prismaService.comment.create({
+    const comment = await this.prismaService.comment.create({
       data: {
         userId,
         postId: Number(input.postId),
@@ -91,6 +95,65 @@ export class PostService {
         parentId: Number(input.parentId),
       },
     });
+
+    const post = await this.prismaService.post.findUnique({
+      where: { id: Number(input.postId) },
+      select: {
+        userId: true,
+      },
+    });
+
+    if (post?.userId != userId) {
+      const postOwner = await this.prismaService.user.findUnique({
+        where: { id: post?.userId },
+        select: { fcm_token: true },
+      });
+
+      if (!!postOwner?.fcm_token) {
+        let userName = '';
+
+        const commentUser = await this.prismaService.user.findUnique({
+          where: {
+            id: userId,
+          },
+          select: {
+            user_type: true,
+          },
+        });
+
+        if (commentUser?.user_type == 'EMPLOYEE') {
+          const emp = await this.prismaService.employee.findFirst({
+            where: {
+              userId,
+            },
+            select: {
+              firstName: true,
+              lastName: true,
+            },
+          });
+          userName = emp?.firstName + ' ' + emp?.lastName;
+        } else {
+          const company = await this.prismaService.copmany.findFirst({
+            where: {
+              userId,
+            },
+            select: {
+              name: true,
+            },
+          });
+
+          userName = company?.name ?? '';
+        }
+
+        this.notificationService.sendPushNotification(
+          postOwner?.fcm_token,
+          userName,
+          comment.content,
+        );
+      }
+    }
+
+    return comment;
   }
 
   async getPosts(pagination: PaginationDto) {

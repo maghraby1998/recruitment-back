@@ -48,6 +48,7 @@ model User {
   comments      Comment[]
   reacts        React[]
   commentReacts CommentReact[]
+  fcm_token     String?
 
   @@map("users")
 }
