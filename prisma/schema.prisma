@@ -11,7 +11,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
 }
 
 enum UserType {
@@ -112,7 +112,7 @@ model JobPost {
   applications Application[]
   status       JobPostStatus @default(OPEN)
   jobPostForm  JobPostForm?
-  created_at   DateTime      @default(now()) @db.Timestamp(3)
+  created_at   DateTime      @default(now())
   skills       Skill[]
   positionId   Int?
   position     Position?     @relation(fields: [positionId], references: [id])
@@ -224,7 +224,7 @@ model Post {
   userId     Int
   user       User        @relation(fields: [userId], references: [id])
   comments   Comment[]
-  created_at DateTime    @default(now()) @db.Timestamp(3)
+  created_at DateTime    @default(now())
   reacts     React[]
   postImages PostImage[]
 }
@@ -239,7 +239,7 @@ model Comment {
   parentId      Int?
   parent        Comment?       @relation("CommentReplies", fields: [parentId], references: [id])
   replies       Comment[]      @relation("CommentReplies")
-  created_at    DateTime       @default(now()) @db.Timestamp(3)
+  created_at    DateTime       @default(now())
   commentReacts CommentReact[]
 }
 
@@ -259,7 +259,7 @@ model React {
   user       User      @relation(fields: [userId], references: [id])
   postId     Int
   post       Post      @relation(fields: [postId], references: [id])
-  created_at DateTime  @default(now()) @db.Timestamp(3)
+  created_at DateTime  @default(now())
 }
 
 model CommentReact {
@@ -269,7 +269,7 @@ model CommentReact {
   user       User      @relation(fields: [userId], references: [id])
   commentId  Int
   comment    Comment   @relation(fields: [commentId], references: [id])
-  created_at DateTime  @default(now()) @db.Timestamp(3)
+  created_at DateTime  @default(now())
 }
 
 model PostImage {
@@ -299,5 +299,5 @@ model Notification {
   receiver   User     @relation(fields: [receiverId], references: [id])
   title      String
   body       String
-  created_at DateTime @default(now()) @db.Timestamp(3)
+  created_at DateTime @default(now())
 }
